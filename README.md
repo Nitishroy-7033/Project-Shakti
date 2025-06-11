@@ -1,4 +1,4 @@
-# projecct_shakti
+# project_shakti
 
 A new Flutter project.
 
