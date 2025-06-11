@@ -1,6 +1,6 @@
 {
-    "name": "projecct_shakti",
-    "short_name": "projecct_shakti",
+    "name": "project_shakti",
+    "short_name": "project_shakti",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
