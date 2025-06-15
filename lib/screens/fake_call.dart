@@ -58,7 +58,7 @@ class CallScreen extends StatelessWidget {
 
             // Call Controls Container with increased height
             Container(
-              height: size.height * 0.35, // 👈 Increased height
+              height: size.height * 0.35,
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
               decoration: BoxDecoration(
