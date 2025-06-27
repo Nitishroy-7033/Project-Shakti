@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/theme/app_colors.dart';
 import 'package:project_shakti/core/widgets/button.dart';
+import 'package:project_shakti/core/widgets/sign_in_button.dart';
 import 'package:project_shakti/core/widgets/text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -45,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text(
                   'Raksha',
                   style: TextStyle(
-                    color: Colors.deepPurple,
+                    color: AppColors.primary,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -61,8 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 Button(
                   icons: null,
                   label: 'Login',
-                  btncolor: Colors.deepPurple,
-                  lablColor: Colors.white,
+                  btncolor: AppColors.primary,
+                  lablColor: AppColors.surface,
                 ),
                 SizedBox(height: 30),
                 Text(
@@ -70,25 +72,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: Colors.grey, fontSize: 20),
                 ),
                 SizedBox(height: 30),
-                Button(
-                  icons: Icons.g_mobiledata,
-                  label: 'Login with Google',
-                  btncolor: Colors.white,
-                  lablColor: Colors.black,
+                SignInButton(
+                  imagePath: 'assets/images/google.png',
+                  labelText: 'Login with Google',
                 ),
-                SizedBox(height: 20),
-                Button(
-                  icons: Icons.apple,
-                  label: 'Login with Apple',
-                  btncolor: Colors.white,
-                  lablColor: Colors.black,
+                SignInButton(
+                  imagePath: 'assets/images/apple.png',
+                  labelText: 'Login with Apple',
                 ),
                 SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text('Create Account ?'),
-                    TextButton(onPressed: () {}, child: Text('Sign Up')),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/signup');
+                      },
+                      child: Text('Sign Up'),
+                    ),
                   ],
                 ),
               ],

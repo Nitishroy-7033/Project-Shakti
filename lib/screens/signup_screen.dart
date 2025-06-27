@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/theme/app_colors.dart';
 import 'package:project_shakti/core/widgets/button.dart';
 import 'package:project_shakti/core/widgets/text_field.dart';
+import 'package:project_shakti/screens/login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -48,7 +50,7 @@ class _SignupScreenState extends State<SignupScreen> {
               Text(
                 'Raksha',
                 style: TextStyle(
-                  color: Colors.deepPurple,
+                  color: AppColors.primary,
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
@@ -71,7 +73,7 @@ class _SignupScreenState extends State<SignupScreen> {
               Center(
                 child: InputTextField(
                   lable: "Password",
-                  controller: nameController,
+                  controller: passwordController,
                 ),
               ),
               SizedBox(height: 20),
@@ -84,8 +86,8 @@ class _SignupScreenState extends State<SignupScreen> {
               SizedBox(height: 50),
 
               Button(
-                btncolor: Colors.deepPurple,
-                lablColor: Colors.white,
+                btncolor: AppColors.primary,
+                lablColor: AppColors.surface,
                 label: 'Sign Up',
                 icons: null,
               ),
@@ -94,7 +96,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Bact to'),
-                  TextButton(onPressed: () {}, child: Text('Login')),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/login');
+                    },
+                    child: Text('Login'),
+                  ),
                 ],
               ),
             ],

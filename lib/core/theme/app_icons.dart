@@ -16,4 +16,5 @@ class AppIcons {
   static const IconData attendance = Icons.access_time;
   static const IconData dashboard = Icons.dashboard;
   static const IconData calendar = Icons.calendar_today;
+  static const String googleIcon = 'assets/images/google.svg';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/theme/app_colors.dart';
 
 class InputTextField extends StatelessWidget {
   final String lable;
@@ -17,12 +18,15 @@ class InputTextField extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           labelText: lable,
-          labelStyle: TextStyle(color: Colors.deepPurple),
+          labelStyle: TextStyle(color: AppColors.primary),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(width: 2, color: Colors.deepPurple),
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(width: 2, color: AppColors.textSecondary),
           ),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(width: 2),
+          ),
         ),
       ),
     );

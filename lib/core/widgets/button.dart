@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/theme/app_colors.dart';
 
 class Button extends StatelessWidget {
   final String label;
@@ -29,7 +30,7 @@ class Button extends StatelessWidget {
                 border: BoxBorder.all(
                   width: 3,
                   style: BorderStyle.solid,
-                  color: Colors.deepPurpleAccent,
+                  color: AppColors.primary,
                 ),
               ),
             ),
