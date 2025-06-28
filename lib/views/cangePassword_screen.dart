@@ -28,7 +28,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Column(
                 children: [
-                  // 🔼 Scrollable content in Flexible
                   Flexible(
                     child: SingleChildScrollView(
                       child: ConstrainedBox(
@@ -37,7 +36,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              /// 🔙 Back + Title
+                              /// Back + Title
                               Row(
                                 children: [
                                   CircleAvatar(
@@ -61,7 +60,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
                               const SizedBox(height: 32),
 
-                              /// 🔐 Current Password
+                              /// Current Password
                               _buildPasswordField(
                                 label: "Current Password",
                                 controller: _currentController,
@@ -96,7 +95,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
                               const SizedBox(height: 20),
 
-                              /// 🔐 New Password
+                              /// New Password
                               _buildPasswordField(
                                 label: "New Password",
                                 controller: _newController,
@@ -108,7 +107,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
                               const SizedBox(height: 20),
 
-                              /// 🔐 Confirm Password
+                              ///Confirm Password
                               _buildPasswordField(
                                 label: "Confirm Password",
                                 controller: _confirmController,
@@ -126,13 +125,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     ),
                   ),
 
-                  /// 🔘 Bottom Button (Always visible)
                   SizedBox(
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black.withOpacity(0.8),
+                        backgroundColor: Colors.black.withValues(alpha: 0.6),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -179,11 +177,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             filled: true,
             fillColor: Colors.grey.shade100,
             hintText: hintText,
-            prefixIcon: const Icon(Icons.lock_outline, color: Colors.orange),
+            prefixIcon: Icon(Icons.lock_outline, color: Colors.grey[700]),
             suffixIcon: IconButton(
               icon: Icon(
                 obscure ? Icons.visibility_off : Icons.visibility,
-                color: Colors.grey,
+                color: Colors.grey[700],
               ),
               onPressed: onToggle,
             ),

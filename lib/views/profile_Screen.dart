@@ -18,14 +18,14 @@ class ProfileScreen extends StatelessWidget {
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  // 🔳 Top Profile Section with Background Image
+                  // Top Profile Section with Background Image
                   Container(
                     height: isSmallDevice ? 180 : 220,
                     width: double.infinity,
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        // 🖼️ Background Image
+                        // Background Image
                         Image.asset(
                           'assets/images/bg.png',
                           fit: BoxFit.cover,
@@ -33,10 +33,10 @@ class ProfileScreen extends StatelessWidget {
 
                         // Overlay
                         Container(
-                          color: Colors.black.withOpacity(0.3),
+                          color: Colors.black.withValues(alpha: 0.3),
                         ),
 
-                        // 📄 Foreground Profile Content
+                        //Foreground Profile Content
                         Padding(
                           padding: EdgeInsets.fromLTRB(16, paddingTop + 20, 16, 16),
                           child: Column(
@@ -56,7 +56,7 @@ class ProfileScreen extends StatelessWidget {
                                   const CircleAvatar(
                                     radius: 35,
                                     backgroundImage:
-                                    AssetImage('assets/images/coming_soon1.png'),
+                                    AssetImage('assets/images/profile.png'),
                                   ),
                                   const SizedBox(width: 16),
                                   const Expanded(
@@ -64,7 +64,7 @@ class ProfileScreen extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Nikto Dark',
+                                          'Yogendra',
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -81,7 +81,9 @@ class ProfileScreen extends StatelessWidget {
                                     ),
                                   ),
                                   ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
                                       Colors.white.withValues(alpha: 0.15),
@@ -162,14 +164,14 @@ class ProfileScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.black12, width: 0.8),
+          border: Border.all(color: Colors.grey.shade200, width: 0.8),
         ),
         child: ListTile(
-          leading: Icon(icon, color: Colors.orange, size: 24),
+          leading: Icon(icon, color: Colors.grey.shade600, size: 24),
           title: Text(
             title,
             style: const TextStyle(
-              color: Colors.black,
+              color: Colors.grey,
               fontWeight: FontWeight.w500,
               fontSize: 14,
             ),

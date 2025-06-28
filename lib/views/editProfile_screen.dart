@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
@@ -7,7 +9,7 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final TextEditingController _nameController = TextEditingController(text: "John Wick");
+  final TextEditingController _nameController = TextEditingController(text: "Yogendra");
   final TextEditingController _mobileController = TextEditingController(text: "+01 1234567890");
   String _selectedGender = 'male';
 
@@ -34,7 +36,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       'assets/images/bg.png',
                       fit: BoxFit.cover,
                     ),
-                    Container(color: Colors.black.withValues(alpha: 0.1)),
+                    Container(color: Colors.black.withOpacity(0.1)),
                   ],
                 ),
               ),
@@ -80,7 +82,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
                         radius: 46,
-                        backgroundImage: AssetImage('assets/images/coming_soon1.png'),
+                        backgroundImage: AssetImage('assets/images/profile.png'),
                       ),
                     ),
                     Container(
@@ -99,7 +101,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
 
           const SizedBox(height: 12),
-          const Text("John Wick", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const Text("Yogendra", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
 
           Expanded(
@@ -107,9 +109,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
-                  _buildTextField(controller: _nameController, hint: "Enter your name"),
+                  _buildLabeledField(label: "Name", controller: _nameController, hint: "Enter your name"),
                   const SizedBox(height: 20),
-                  _buildTextField(controller: _mobileController, hint: "Enter your mobile number"),
+                  _buildLabeledField(label: "Phone Number", controller: _mobileController, hint: "Enter your mobile number"),
                   const SizedBox(height: 20),
 
                   const Align(
@@ -157,15 +159,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black.withValues(alpha: 0.5),
+                  backgroundColor: Colors.black.withOpacity(0.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onPressed: () {
-                  print("Name: ${_nameController.text}");
-                  print("Mobile: ${_mobileController.text}");
-                  print("Gender: $_selectedGender");
+                  print("Name: \${_nameController.text}");
+                  print("Mobile: \${_mobileController.text}");
+                  print("Gender: \$_selectedGender");
                 },
                 child: const Text("S A V E", style: TextStyle(color: Colors.white)),
               ),
@@ -200,6 +202,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           borderSide: const BorderSide(color: Colors.black, width: 0.8),
         ),
       ),
+    );
+  }
+
+  Widget _buildLabeledField({
+    required String label,
+    required TextEditingController controller,
+    required String hint,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        _buildTextField(controller: controller, hint: hint),
+      ],
     );
   }
 }
