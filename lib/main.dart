@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/pages/AddFriendPage.dart';
 import 'package:project_shakti/screens/fake_call.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const CallScreen(),
+      home: const AddFriendPage(),
     );
   }
 }

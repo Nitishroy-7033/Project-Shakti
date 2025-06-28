@@ -37,6 +37,7 @@ dependencies:
   # contacts_service:
   permission_handler: ^11.3.1
   google_fonts: ^6.1.0
+  flutter_contacts: ^1.1.9+2
 
 dev_dependencies:
   flutter_test:

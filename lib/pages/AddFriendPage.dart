@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:permission_handler/permission_handler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'friend_list_page.dart';
 
 class AddFriendPage extends StatefulWidget {
@@ -16,20 +16,66 @@ class _AddFriendPageState extends State<AddFriendPage> {
   final TextEditingController _numberController = TextEditingController();
   int _selectedIndex = 0;
 
-  // Future<void> _pickContact() async {
-  //   final permissionStatus = await Permission.contacts.request();
-  //   if (permissionStatus.isGranted) {
-  //     final contact = await ContactsService.openDeviceContactPicker();
-  //     if (contact != null && contact.phones!.isNotEmpty) {
-  //       _nameController.text = contact.displayName ?? '';
-  //       _numberController.text = contact.phones!.first.value ?? '';
-  //     }
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Contact permission denied')),
-  //     );
-  //   }
-  // }
+  Future<void> _pickContact() async {
+    try {
+      // Request contact permission
+      final permissionStatus = await Permission.contacts.request();
+      if (permissionStatus.isGranted) {
+        // Fetch all contacts
+        final contacts = await FlutterContacts.getContacts();
+        if (contacts.isNotEmpty) {
+          // Show a dialog to pick a contact
+          showDialog(
+            context: context,
+            builder:
+                (context) => AlertDialog(
+                  title: const Text('Select a Contact'),
+                  content: SizedBox(
+                    width: double.maxFinite,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: contacts.length,
+                      itemBuilder: (context, index) {
+                        final contact = contacts[index];
+                        return ListTile(
+                          title: Text(contact.displayName),
+                          onTap: () async {
+                            // Fetch detailed contact info
+                            final fullContact =
+                                await FlutterContacts.getContact(contact.id);
+                            if (fullContact != null &&
+                                fullContact.phones.isNotEmpty) {
+                              setState(() {
+                                _nameController.text =
+                                    fullContact.displayName ?? '';
+                                _numberController.text =
+                                    fullContact.phones.first.number ?? '';
+                              });
+                              Navigator.pop(context);
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+          );
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('No contacts found')));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Contact permission denied')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error picking contact: $e')));
+    }
+  }
 
   Widget _buildBottomItem(IconData icon, String label, int index) {
     final isSelected = _selectedIndex == index;
@@ -140,8 +186,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                     height: 58,
                     width: 52,
                     child: ElevatedButton(
-                      onPressed: () {},
-
+                      onPressed: _pickContact,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey.shade200,
                         foregroundColor: Colors.black,
@@ -153,6 +198,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                   ),
                 ],
               ),
+              // Rest of your existing body content remains unchanged
               const SizedBox(height: 24),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -213,7 +259,6 @@ class _AddFriendPageState extends State<AddFriendPage> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Add friend action
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -254,7 +299,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
           children: [
             _buildBottomItem(Icons.shield, 'Guard Me', 0),
             _buildBottomItem(Icons.mic, 'Record', 1),
-            const SizedBox(width: 40), // Space for FAB
+            const SizedBox(width: 40),
             _buildBottomItem(Icons.call, 'Fake Call', 2),
             _buildBottomItem(Icons.person, 'Profile', 3),
           ],
@@ -263,9 +308,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purple,
-        onPressed: () {
-          // SOS Action
-        },
+        onPressed: () {},
         child: const Icon(Icons.notifications_active),
       ),
     );
