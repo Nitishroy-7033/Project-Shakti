@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:project_shakti/screens/Login_Screen.dart';
-import 'package:project_shakti/screens/fake_call.dart';
-import 'package:project_shakti/screens/signup_screen.dart';
+import 'package:project_shakti/core/routes/routes.dart';
+import 'package:project_shakti/core/theme/app_theme.dart';
+
+import 'package:project_shakti/features/splash_screen/views/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,14 +16,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Shakti',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const SignupScreen(),
-      routes: {
-        '/signup': (context) => SignupScreen(),
-        '/login': (context) => LoginScreen(),
-      },
+      theme: AppTheme.lightTheme(),
+      darkTheme: AppTheme.darkTheme(),
+      themeMode: ThemeMode.light,
+      home: const SplashScreen(),
+
+      routes: AppRoutes.getRoutes(),
     );
   }
 }
