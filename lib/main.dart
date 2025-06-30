@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_shakti/core/routes/routes.dart';
 import 'package:project_shakti/core/theme/app_theme.dart';
 
-import 'package:project_shakti/features/splash_screen/views/splash_screen.dart';
+import 'package:project_shakti/features/splash/views/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());

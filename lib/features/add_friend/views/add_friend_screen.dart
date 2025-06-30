@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:project_shakti/features/friend_list_page/views/friend_list_page.dart';
+import 'package:project_shakti/features/friend_list/views/friend_list_page.dart';
 
 class AddFriendPage extends StatefulWidget {
   const AddFriendPage({super.key});

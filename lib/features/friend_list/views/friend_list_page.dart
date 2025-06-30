@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:project_shakti/features/AddFriendPage/views/AddFriendPage.dart';
-import 'package:project_shakti/features/EditFriendPage/views/EditFriendPage.dart';
+import 'package:project_shakti/features/add_friend/views/add_friend_screen.dart';
+import 'package:project_shakti/features/edit_friend/views/edit_friend_screen.dart';
 
 class FriendListPage extends StatelessWidget {
   const FriendListPage({super.key});
