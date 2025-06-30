@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
+import 'package:project_shakti/core/theme/app_colors.dart';
 
 class AppTextStyles {
   static const TextStyle headline1 = TextStyle(
