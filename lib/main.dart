@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:project_shakti/core/routes/routes.dart';
+import 'package:project_shakti/core/theme/app_theme.dart';
+
+import 'package:project_shakti/features/splash/views/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,23 +13,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp(
       title: 'Shakti',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: AppTheme.lightTheme(),
+      darkTheme: AppTheme.darkTheme(),
+      themeMode: ThemeMode.light,
+      home: const SplashScreen(),
 
-      home: const Demo(),
+      routes: AppRoutes.getRoutes(),
     );
-  }
-}
-
-class Demo extends StatelessWidget {
-  const Demo({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text("Demo screen page")));
   }
 }
