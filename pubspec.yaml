@@ -72,6 +72,7 @@ dependencies:
   permission_handler: ^11.3.1
   google_fonts: ^6.1.0
   flutter_contacts: ^1.1.9+2
+  get: ^4.7.2
   # Add other dependencies here
 
 dev_dependencies:

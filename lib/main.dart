@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Shakti',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -27,6 +27,6 @@ class Demo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Scaffold(body: Center(child: Text("Demo screen page")));
   }
 }
