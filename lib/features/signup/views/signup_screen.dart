@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
 import 'package:project_shakti/core/theme/app_text_styles.dart';
-import 'package:project_shakti/core/utils/UIHelper.dart';
-import 'package:project_shakti/core/widgets/CustomButton.dart';
-import 'package:project_shakti/core/widgets/CustomTextField.dart';
+import 'package:project_shakti/core/utils/ui_helper.dart';
+import 'package:project_shakti/core/widgets/custom_button.dart';
+import 'package:project_shakti/core/widgets/custom_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
   final Function(ThemeMode)? onThemeChanged;
