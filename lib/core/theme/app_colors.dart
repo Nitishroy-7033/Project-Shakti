@@ -61,7 +61,7 @@ class AppColor {
       brightness == Brightness.dark ? textPrimaryDark : textPrimaryLight;
 
   static Color secondaryText(Brightness brightness) =>
-      brightness == Brightness.dark ? textSecondaryDark : textPrimaryLight;
+      brightness == Brightness.dark ? textPrimaryDark : textPrimaryLight;
 
   static Color accentPink(Brightness brightness) =>
       brightness == Brightness.dark ? accentPinkDark : accentPinkLight;
