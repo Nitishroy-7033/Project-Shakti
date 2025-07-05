@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-
-
+import 'package:project_shakti/core/widgets/custom_button.dart';
+import 'package:project_shakti/core/widgets/custom_text_field.dart';
 
 class TripMapScreen extends StatefulWidget {
   const TripMapScreen({super.key});
@@ -15,23 +16,38 @@ class TripMapScreen extends StatefulWidget {
 }
 
 class _TripMapScreenState extends State<TripMapScreen> {
-  late GoogleMapController mapController;
+  late GoogleMapController _mapController;
 
-  LatLng? sourceLatLng;
-  LatLng? destinationLatLng;
-  List<LatLng> polylinePoints = [];
+  // Controllers
+  final _sourceController = TextEditingController();
+  final _destinationController = TextEditingController();
+  final _dateTimeController = TextEditingController();
 
-  double totalDistance = 0.0;
-  int currentProgressIndex = 0;
+  // Trip data
+  LatLng? _sourceLatLng;
+  LatLng? _destinationLatLng;
+  List<LatLng> _polylinePoints = [];
+  String _selectedMode = "Bicycling";
+  DateTime? _selectedDateTime;
 
-  final sourceController = TextEditingController();
-  final destinationController = TextEditingController();
-  final dateTimeController = TextEditingController();
-  String selectedMode = "Bicycling";
+  // Animation
+  int _currentProgressIndex = 0;
+  bool _isLoading = false;
+  bool _isTripActive = false;
 
-  DateTime? selectedDateTime;
+  static const String _apiKey = "AIzaSyDK4ylJEGO07EmXn9FFybZDzKy_7k2Mo40";
+  static const LatLng _defaultLocation = LatLng(28.6139, 77.2090);
 
-  Future<LatLng?> getCoordinates(String place) async {
+  @override
+  void dispose() {
+    _sourceController.dispose();
+    _destinationController.dispose();
+    _dateTimeController.dispose();
+    super.dispose();
+  }
+
+  // Get coordinates from address
+  Future<LatLng?> _getCoordinates(String place) async {
     try {
       List<Location> locations = await locationFromAddress(place);
       if (locations.isNotEmpty) {
@@ -43,25 +59,33 @@ class _TripMapScreenState extends State<TripMapScreen> {
     return null;
   }
 
-  Future<void> _getPolylineRoute() async {
-    if (sourceLatLng == null || destinationLatLng == null) return;
+  // Get route from Google Directions API
+  Future<void> _getRoute() async {
+    if (_sourceLatLng == null || _destinationLatLng == null) return;
 
-    const String apiKey = "AIzaSyDK4ylJEGO07EmXn9FFybZDzKy_7k2Mo40";
     final url =
-        "https://maps.googleapis.com/maps/api/directions/json?origin=${sourceLatLng!.latitude},${sourceLatLng!.longitude}&destination=${destinationLatLng!.latitude},${destinationLatLng!.longitude}&mode=${selectedMode.toLowerCase()}&key=$apiKey";
+        "https://maps.googleapis.com/maps/api/directions/json"
+        "?origin=${_sourceLatLng!.latitude},${_sourceLatLng!.longitude}"
+        "&destination=${_destinationLatLng!.latitude},${_destinationLatLng!.longitude}"
+        "&mode=${_selectedMode.toLowerCase()}"
+        "&key=$_apiKey";
 
-    final response = await http.get(Uri.parse(url));
-    final json = jsonDecode(response.body);
+    try {
+      final response = await http.get(Uri.parse(url));
+      final json = jsonDecode(response.body);
 
-    if (json['routes'].isNotEmpty) {
-      final points = json['routes'][0]['overview_polyline']['points'];
-      polylinePoints = _decodePolyline(points);
-      totalDistance = _calculateTotalDistance(polylinePoints);
-      currentProgressIndex = 0;
-      setState(() {});
+      if (json['routes'].isNotEmpty) {
+        final points = json['routes'][0]['overview_polyline']['points'];
+        _polylinePoints = _decodePolyline(points);
+        _currentProgressIndex = 0;
+        setState(() {});
+      }
+    } catch (e) {
+      _showErrorSnackBar("Failed to get route: $e");
     }
   }
 
+  // Decode polyline points
   List<LatLng> _decodePolyline(String encoded) {
     List<LatLng> points = [];
     int index = 0, len = encoded.length;
@@ -92,85 +116,94 @@ class _TripMapScreenState extends State<TripMapScreen> {
     return points;
   }
 
-  double _calculateTotalDistance(List<LatLng> points) {
-    double distance = 0.0;
-    for (int i = 0; i < points.length - 1; i++) {
-      distance += _coordinateDistance(
-        points[i].latitude,
-        points[i].longitude,
-        points[i + 1].latitude,
-        points[i + 1].longitude,
-      );
-    }
-    return distance;
-  }
-
-  double _coordinateDistance(lat1, lon1, lat2, lon2) {
-    const p = 0.017453292519943295;
-    final a = 0.5 -
-        cos((lat2 - lat1) * p) / 2 +
-        cos(lat1 * p) *
-            cos(lat2 * p) *
-            (1 - cos((lon2 - lon1) * p)) /
-            2;
-    return 12742 * asin(sqrt(a));
-  }
-
+  // Simulate travel progress
   void _simulateTravelProgress() async {
-    for (int i = 0; i < polylinePoints.length; i++) {
+    setState(() => _isTripActive = true);
+
+    for (int i = 0; i < _polylinePoints.length; i++) {
+      if (!_isTripActive) break;
       await Future.delayed(const Duration(milliseconds: 300));
-      setState(() {
-        currentProgressIndex = i;
-      });
+      if (mounted) {
+        setState(() => _currentProgressIndex = i);
+      }
+    }
+
+    if (mounted) {
+      setState(() => _isTripActive = false);
+      _showSuccessSnackBar("Trip completed!");
     }
   }
 
-  void _startTrip() async {
-    final sourceText = sourceController.text.trim();
-    final destinationText = destinationController.text.trim();
+  // Start trip
+  Future<void> _startTrip() async {
+    if (!_validateInputs()) return;
 
-    if (sourceText.isEmpty || destinationText.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter both source and destination.")),
+    setState(() => _isLoading = true);
+
+    try {
+      final source = await _getCoordinates(_sourceController.text.trim());
+      final destination = await _getCoordinates(
+        _destinationController.text.trim(),
       );
-      return;
+
+      if (source == null || destination == null) {
+        _showErrorSnackBar("Invalid source or destination location");
+        return;
+      }
+
+      _sourceLatLng = source;
+      _destinationLatLng = destination;
+
+      await _getRoute();
+      _animateToRoute();
+      _simulateTravelProgress();
+    } catch (e) {
+      _showErrorSnackBar("Failed to start trip: $e");
+    } finally {
+      setState(() => _isLoading = false);
     }
+  }
 
-    final source = await getCoordinates(sourceText);
-    final destination = await getCoordinates(destinationText);
-
-    if (source == null || destination == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid source or destination.")),
-      );
-      return;
-    }
-
+  // Stop trip
+  void _stopTrip() {
     setState(() {
-      sourceLatLng = source;
-      destinationLatLng = destination;
+      _isTripActive = false;
+      _currentProgressIndex = 0;
     });
-
-    await _getPolylineRoute();
-    _simulateTravelProgress();
-
-    mapController.animateCamera(
-      CameraUpdate.newLatLngBounds(
-        LatLngBounds(
-          southwest: LatLng(
-            min(source.latitude, destination.latitude),
-            min(source.longitude, destination.longitude),
-          ),
-          northeast: LatLng(
-            max(source.latitude, destination.latitude),
-            max(source.longitude, destination.longitude),
-          ),
-        ),
-        80.0,
-      ),
-    );
   }
 
+  // Validate inputs
+  bool _validateInputs() {
+    if (_sourceController.text.trim().isEmpty ||
+        _destinationController.text.trim().isEmpty) {
+      _showErrorSnackBar("Please enter both source and destination");
+      return false;
+    }
+    return true;
+  }
+
+  // Animate camera to show route
+  void _animateToRoute() {
+    if (_sourceLatLng != null && _destinationLatLng != null) {
+      _mapController.animateCamera(
+        CameraUpdate.newLatLngBounds(
+          LatLngBounds(
+            southwest: LatLng(
+              min(_sourceLatLng!.latitude, _destinationLatLng!.latitude),
+              min(_sourceLatLng!.longitude, _destinationLatLng!.longitude),
+            ),
+            northeast: LatLng(
+              max(_sourceLatLng!.latitude, _destinationLatLng!.latitude),
+              max(_sourceLatLng!.longitude, _destinationLatLng!.longitude),
+            ),
+          ),
+          100.0,
+        ),
+      );
+    }
+  }
+
+  // Pick date and time
   Future<void> _pickDateTime() async {
     final date = await showDatePicker(
       context: context,
@@ -186,182 +219,288 @@ class _TripMapScreenState extends State<TripMapScreen> {
     );
     if (time == null) return;
 
-    final dt = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    final dateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
     setState(() {
-      selectedDateTime = dt;
-      dateTimeController.text = "${dt.toLocal()}".split(".")[0];
+      _selectedDateTime = dateTime;
+      _dateTimeController.text = "${dateTime.toLocal()}".split(".")[0];
     });
+  }
+
+  // Show error snackbar
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  // Show success snackbar
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text("Trip Planner"),
-        backgroundColor: Colors.deepPurple,
+        elevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        foregroundColor: Theme.of(context).textTheme.bodyLarge?.color,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _textField("Start Location", sourceController, "e.g. Connaught Place"),
-                  const SizedBox(height: 10),
-                  _textField("Destination", destinationController, "e.g. India Gate"),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: _pickDateTime,
-                    child: AbsorbPointer(
-                      child: _textField("Date/Time", dateTimeController, "Select Date and Time"),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _modeDropdown(),
-                ],
+      body: Column(
+        children: [
+          _buildTripForm(),
+          _buildMapContainer(),
+          _buildActionButtons(),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  // Build trip form
+  Widget _buildTripForm() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          CustomTextField(
+            labelText: "Start Location",
+            prefixIcon: Icons.my_location,
+            controller: _sourceController,
+          ),
+          const SizedBox(height: 12),
+          CustomTextField(
+            labelText: "Destination",
+            prefixIcon: Icons.location_on,
+            controller: _destinationController,
+          ),
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: _pickDateTime,
+            child: AbsorbPointer(
+              child: CustomTextField(
+                labelText: "Date & Time",
+                prefixIcon: Icons.access_time,
+                controller: _dateTimeController,
               ),
             ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              height: 300,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 5)],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: GoogleMap(
-                  initialCameraPosition: const CameraPosition(
-                    target: LatLng(28.6139, 77.2090),
-                    zoom: 12,
-                  ),
-                  markers: {
-                    if (sourceLatLng != null)
-                      Marker(
-                        markerId: const MarkerId("source"),
-                        position: sourceLatLng!,
-                        infoWindow: const InfoWindow(title: "Start"),
-                        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-                      ),
-                    if (destinationLatLng != null)
-                      Marker(
-                        markerId: const MarkerId("destination"),
-                        position: destinationLatLng!,
-                        infoWindow: const InfoWindow(title: "Destination"),
-                        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-                      ),
-                    if (polylinePoints.isNotEmpty)
-                      Marker(
-                        markerId: const MarkerId("moving"),
-                        position: polylinePoints[currentProgressIndex],
-                        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-                      ),
-                  },
-                  polylines: {
-                    if (polylinePoints.isNotEmpty)
-                      Polyline(
-                        polylineId: const PolylineId("fullPath"),
-                        color: Colors.orange,
-                        width: 6,
-                        points: polylinePoints,
-                      ),
-                    if (polylinePoints.isNotEmpty && currentProgressIndex > 0)
-                      Polyline(
-                        polylineId: const PolylineId("traveledPath"),
-                        color: Colors.green,
-                        width: 6,
-                        points: polylinePoints.sublist(0, currentProgressIndex + 1),
-                      ),
-                  },
-                  onMapCreated: (controller) => mapController = controller,
-                  myLocationButtonEnabled: false,
-                  zoomControlsEnabled: false,
+          ),
+          const SizedBox(height: 12),
+          _buildModeSelector(),
+        ],
+      ),
+    );
+  }
+
+  // Build mode selector
+  Widget _buildModeSelector() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: DropdownButton<String>(
+        value: _selectedMode,
+        isExpanded: true,
+        underline: const SizedBox(),
+        icon: const Icon(Icons.keyboard_arrow_down),
+        onChanged: (value) {
+          setState(() => _selectedMode = value!);
+        },
+        items:
+            ["Walking", "Driving", "Bicycling", "Transit"].map((mode) {
+              return DropdownMenuItem<String>(
+                value: mode,
+                child: Row(
+                  children: [
+                    Icon(_getModeIcon(mode), size: 20),
+                    const SizedBox(width: 8),
+                    Text(mode),
+                  ],
                 ),
-              ),
+              );
+            }).toList(),
+      ),
+    );
+  }
+
+  // Get mode icon
+  IconData _getModeIcon(String mode) {
+    switch (mode) {
+      case "Walking":
+        return Icons.directions_walk;
+      case "Driving":
+        return Icons.directions_car;
+      case "Bicycling":
+        return Icons.directions_bike;
+      case "Transit":
+        return Icons.directions_transit;
+      default:
+        return Icons.directions;
+    }
+  }
+
+  // Build map container
+  Widget _buildMapContainer() {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: _startTrip,
-                      icon: const Icon(Icons.play_arrow),
-                      label: const Text("Start Trip"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("SOS Triggered")),
-                        );
-                      },
-                      icon: const Icon(Icons.warning),
-                      label: const Text("SOS"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
           ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: GoogleMap(
+            initialCameraPosition: const CameraPosition(
+              target: _defaultLocation,
+              zoom: 12,
+            ),
+            markers: _buildMarkers(),
+            polylines: _buildPolylines(),
+            onMapCreated: (controller) => _mapController = controller,
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            compassEnabled: false,
+            mapToolbarEnabled: false,
+          ),
         ),
       ),
     );
   }
 
-  Widget _textField(String label, TextEditingController controller, String hint) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+  // Build markers
+  Set<Marker> _buildMarkers() {
+    Set<Marker> markers = {};
+
+    if (_sourceLatLng != null) {
+      markers.add(
+        Marker(
+          markerId: const MarkerId("source"),
+          position: _sourceLatLng!,
+          infoWindow: const InfoWindow(title: "Start"),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
+        ),
+      );
+    }
+
+    if (_destinationLatLng != null) {
+      markers.add(
+        Marker(
+          markerId: const MarkerId("destination"),
+          position: _destinationLatLng!,
+          infoWindow: const InfoWindow(title: "Destination"),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        ),
+      );
+    }
+
+    if (_polylinePoints.isNotEmpty && _isTripActive) {
+      markers.add(
+        Marker(
+          markerId: const MarkerId("current"),
+          position: _polylinePoints[_currentProgressIndex],
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        ),
+      );
+    }
+
+    return markers;
+  }
+
+  // Build polylines
+  Set<Polyline> _buildPolylines() {
+    Set<Polyline> polylines = {};
+
+    if (_polylinePoints.isNotEmpty) {
+      polylines.add(
+        Polyline(
+          polylineId: const PolylineId("route"),
+          color: Colors.blue.shade300,
+          width: 5,
+          points: _polylinePoints,
+          patterns: [PatternItem.dash(20), PatternItem.gap(10)],
+        ),
+      );
+
+      if (_isTripActive && _currentProgressIndex > 0) {
+        polylines.add(
+          Polyline(
+            polylineId: const PolylineId("traveled"),
+            color: Colors.green,
+            width: 6,
+            points: _polylinePoints.sublist(0, _currentProgressIndex + 1),
+          ),
+        );
+      }
+    }
+
+    return polylines;
+  }
+
+  // Build action buttons
+  Widget _buildActionButtons() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: CustomButton(
+              text:
+                  _isLoading
+                      ? "Loading..."
+                      : _isTripActive
+                      ? "Stop Trip"
+                      : "Start Trip",
+              backgroundColor: _isTripActive ? Colors.orange : Colors.green,
+              onPressed:
+                  _isLoading
+                      ? null
+                      : _isTripActive
+                      ? _stopTrip
+                      : _startTrip,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: CustomButton(
+              text: "SOS",
+              backgroundColor: Colors.red,
+              onPressed: () {
+                // TODO: Implement SOS functionality
+                _showErrorSnackBar("SOS feature not implemented yet");
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
-
-  Widget _modeDropdown() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: DropdownButton<String>(
-        value: selectedMode,
-        isExpanded: true,
-        underline: const SizedBox(),
-        onChanged: (value) {
-          setState(() {
-            selectedMode = value!;
-          });
-        },
-        items: ["Walking", "Driving", "Bicycling", "Transit"]
-            .map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text("Mode of Travel: $value"),
-          );
-        }).toList(),
-     ),
-);
-}
 }
