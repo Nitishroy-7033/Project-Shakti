@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/constants/app_icons.dart';
+import 'package:project_shakti/core/constants/app_strings.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
 import 'package:project_shakti/core/theme/app_text_styles.dart';
 import 'package:project_shakti/core/utils/ui_helper.dart';
@@ -61,56 +63,52 @@ class _SignUpScreenState extends State<SignUpScreen>
     final brightness = Theme.of(context).brightness;
     final size = MediaQuery.of(context).size;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            AppColor.accentBlue(brightness).withOpacity(0.1),
-            AppColor.background(brightness),
-            AppColor.accentPink(brightness).withOpacity(0.05),
-          ],
-          stops: const [0.0, 0.5, 1.0],
-        ),
-      ),
+    return SafeArea(
       child: Scaffold(
-        body: SafeArea(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.9),
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
+              ],
+              stops: const [0.0, 0.3, 1.0],
+            ),
+          ),
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: SlideTransition(
               position: _slideAnimation,
               child: Center(
                 child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
                   padding: EdgeInsets.symmetric(
-                    horizontal: size.width * 0.08,
-                    vertical: UIHelper.paddingMedium,
+                    horizontal: UIHelper.paddingLarge,
                   ),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 400),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Welcome Section
-                        _buildWelcomeSection(brightness),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+                      // Welcome Section
+                      _buildWelcomeSection(brightness),
 
-                        UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      // UIHelper.getVerticalSpace(UIHelper.paddingLarge),
 
-                        // SignUp Form
-                        _buildSignUpForm(brightness),
+                      // SignUp Form
+                      _buildSignUpForm(brightness),
 
-                        UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      // UIHelper.getVerticalSpace(UIHelper.paddingLarge),
 
-                        // Social SignUp Section
-                        _buildSocialSignUpSection(brightness),
+                      // Social SignUp Section
+                      _buildSocialSignUpSection(brightness),
 
-                        UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      // UIHelper.getVerticalSpace(UIHelper.paddingLarge),
 
-                        // Login Link
-                        _buildLoginSection(brightness),
-                      ],
-                    ),
+                      // Login Link
+                      _buildLoginSection(brightness),
+                    ],
                   ),
                 ),
               ),
@@ -125,44 +123,42 @@ class _SignUpScreenState extends State<SignUpScreen>
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [
-                AppColor.accentBlue(brightness).withOpacity(0.2),
-                AppColor.accentPink(brightness).withOpacity(0.2),
-              ],
-            ),
+            color: AppColors.whiteCommon,
             boxShadow: [
               BoxShadow(
-                color: AppColor.accentBlue(brightness).withOpacity(0.1),
-                blurRadius: 20,
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
+                blurRadius: 10,
                 spreadRadius: 5,
               ),
             ],
           ),
           child: Icon(
-            Icons.person_add_rounded,
+            AppIcons.addPerson,
             size: 40,
-            color: AppColor.accentBlue(brightness),
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         UIHelper.getVerticalSpace(UIHelper.paddingMedium),
         Text(
-          'Create Account',
-          style: AppTextStyles.heading1(
-            brightness,
-          ).copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.5),
-          textAlign: TextAlign.center,
-        ),
-        UIHelper.getVerticalSpace(UIHelper.paddingSmall),
-        Text(
-          'Join Shakti and start your journey today',
-          style: AppTextStyles.subheading(brightness).copyWith(
-            color: AppTextStyles.subheading(brightness).color?.withOpacity(0.7),
+          AppStrings.createAccount,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
           ),
-          textAlign: TextAlign.center,
+        ),
+        Opacity(
+          opacity: 0.8,
+          child: Text(
+            AppStrings.joinToShakti,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
         ),
       ],
     );
@@ -199,7 +195,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                 child: CustomTextField(
                   labelText: 'First Name',
                   keyboardType: TextInputType.name,
-                  prefixIcon: Icons.person_outline,
+                  // prefixIcon: Icons.person_outline,
                 ),
               ),
               UIHelper.getHorizontalSpace(UIHelper.paddingSmall),
@@ -207,7 +203,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                 child: CustomTextField(
                   labelText: 'Last Name',
                   keyboardType: TextInputType.name,
-                  prefixIcon: Icons.person_outline,
+                  // prefixIcon: Icons.person_outline,
                 ),
               ),
             ],
@@ -216,25 +212,25 @@ class _SignUpScreenState extends State<SignUpScreen>
           CustomTextField(
             labelText: 'Email Address',
             keyboardType: TextInputType.emailAddress,
-            prefixIcon: Icons.email_outlined,
+            // prefixIcon: Icons.email_outlined,
           ),
           UIHelper.getVerticalSpace(UIHelper.paddingMedium),
           CustomTextField(
             labelText: 'Phone Number',
             keyboardType: TextInputType.phone,
-            prefixIcon: Icons.phone_outlined,
+            // prefixIcon: Icons.phone_outlined,
           ),
           UIHelper.getVerticalSpace(UIHelper.paddingMedium),
           CustomTextField(
             labelText: 'Password',
             obscureText: true,
-            prefixIcon: Icons.lock_outline,
+            // prefixIcon: Icons.lock_outline,
           ),
           UIHelper.getVerticalSpace(UIHelper.paddingMedium),
           CustomTextField(
             labelText: 'Confirm Password',
             obscureText: true,
-            prefixIcon: Icons.lock_outline,
+            // prefixIcon: Icons.lock_outline,
           ),
           UIHelper.getVerticalSpace(UIHelper.paddingMedium),
 
@@ -273,7 +269,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                           TextSpan(
                             text: 'Terms of Service',
                             style: TextStyle(
-                              color: AppColor.accentBlue(brightness),
+                              // color: AppColor.accentBlue(brightness),
                               fontWeight: FontWeight.w600,
                               decoration: TextDecoration.underline,
                             ),
@@ -282,7 +278,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                           TextSpan(
                             text: 'Privacy Policy',
                             style: TextStyle(
-                              color: AppColor.accentBlue(brightness),
+                              // color: AppColor.accentBlue(brightness),
                               fontWeight: FontWeight.w600,
                               decoration: TextDecoration.underline,
                             ),
@@ -308,12 +304,12 @@ class _SignUpScreenState extends State<SignUpScreen>
                       }
                       : null,
               isEnabled: _acceptTerms,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
+              // style: ElevatedButton.styleFrom(
+              //   padding: const EdgeInsets.symmetric(vertical: 16),
+              //   shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(12),
+              //   ),
+              // ),
             ),
           ),
         ],
@@ -465,10 +461,10 @@ class _SignUpScreenState extends State<SignUpScreen>
             child: Text(
               'Sign In',
               style: AppTextStyles.button(brightness).copyWith(
-                color: AppColor.accentPink(brightness),
+                // color: AppColor.accentPink(brightness),
                 fontWeight: FontWeight.w700,
                 decoration: TextDecoration.underline,
-                decorationColor: AppColor.accentPink(brightness),
+                // decorationColor: AppColor.accentPink(brightness),
               ),
             ),
           ),

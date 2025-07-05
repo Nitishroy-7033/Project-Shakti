@@ -16,11 +16,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Shakti',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme(),
-      darkTheme: AppTheme.darkTheme(),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
+      // themeMode: themeController.isLightTheme.value
+      //             ? ThemeMode.light
+      //             : ThemeMode.dark,
       home: const SplashScreen(),
-
       routes: AppRoutes.getRoutes(),
     );
   }

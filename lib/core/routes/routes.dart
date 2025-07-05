@@ -30,7 +30,7 @@ class AppRoutes {
       splash: (context) => const SplashScreen(),
       login: (context) => const LoginScreen(),
       signup: (context) => const SignUpScreen(),
-      profile: (context) => const ProfileScreen(),
+      // profile: (context) => const ProfileScreen(),
       friendList: (context) => const FriendListPage(),
       addFriend: (context) => const AddFriendPage(),
       editFriend: (context) => const EditFriendPage(),

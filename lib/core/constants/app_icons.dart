@@ -11,10 +11,17 @@ class AppIcons {
   static const IconData upload = Icons.upload;
   static const IconData edit = Icons.edit;
   static const IconData delete = Icons.delete;
+  static const IconData heart = Icons.favorite;
+  static const IconData bolt = Icons.bolt_rounded;
 
   // Custom use case icons
   static const IconData attendance = Icons.access_time;
   static const IconData dashboard = Icons.dashboard;
   static const IconData calendar = Icons.calendar_today;
-  static const String googleIcon = 'assets/images/google.svg';
+  static const IconData addPerson = Icons.person_add_rounded;
+
+  static const String googleIcon = 'assets/images/google.png';
+  static const String appleIcon = 'assets/images/apple.png';
+  static const String microsoftIcon = 'assets/images/microsoft.png';
+  static const String phoneIcon = 'assets/images/phone.png';
 }
