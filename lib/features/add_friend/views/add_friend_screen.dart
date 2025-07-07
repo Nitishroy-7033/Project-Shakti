@@ -6,7 +6,7 @@ import 'package:project_shakti/features/friend_list/views/friend_list_page.dart'
 
 class AddFriendPage extends StatefulWidget {
   const AddFriendPage({super.key});
-
+ 
   @override
   State<AddFriendPage> createState() => _AddFriendPageState();
 }

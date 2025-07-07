@@ -9,7 +9,7 @@ class AppIcons {
   static const IconData search = Icons.search;
   static const IconData camera = Icons.camera_alt;
   static const IconData upload = Icons.upload;
-  static const IconData edit = Icons.edit;
+  static const IconData edit = Icons.edit_rounded;
   static const IconData delete = Icons.delete;
   static const IconData heart = Icons.favorite;
   static const IconData bolt = Icons.bolt_rounded;
@@ -19,6 +19,7 @@ class AppIcons {
   static const IconData dashboard = Icons.dashboard;
   static const IconData calendar = Icons.calendar_today;
   static const IconData addPerson = Icons.person_add_rounded;
+  static const IconData group = Icons.groups_rounded;
 
   static const String googleIcon = 'assets/images/google.png';
   static const String appleIcon = 'assets/images/apple.png';

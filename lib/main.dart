@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
       // themeMode: themeController.isLightTheme.value
       //             ? ThemeMode.light
       //             : ThemeMode.dark,
-      home: const SplashScreen(),
+      initialRoute: AppRoutes.friendList,
+      // home: const SplashScreen(),
       routes: AppRoutes.getRoutes(),
     );
   }

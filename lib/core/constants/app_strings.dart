@@ -1,5 +1,6 @@
 class AppStrings {
   static const String appName = "SHAKTI";
+  static const String appNameLower = "Shakti";
 
   // Buttons Text
   static const String loginButton = "Sign In";
@@ -19,4 +20,5 @@ class AppStrings {
 
   // Singup screen
   static const String joinToShakti = "Join Shakti and start your journey today";
+  static const String alreadyHaveAccount = "Already have an account?";
 }
