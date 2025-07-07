@@ -187,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Rup Ki Rani',
+                'Shakti',
                 style: AppTextStyles.heading2(
                   brightness,
                 ).copyWith(fontWeight: FontWeight.w700),
@@ -207,7 +207,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
           // Email
           Text(
-            'rupkirani@gmail69.com',
+            ' shakti@gmail.com ',
             style: AppTextStyles.body(brightness).copyWith(
               color: AppTextStyles.body(brightness).color?.withOpacity(0.7),
             ),
