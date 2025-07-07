@@ -4,6 +4,8 @@ import 'package:project_shakti/core/theme/app_theme.dart';
 
 import 'package:project_shakti/features/splash_screen/views/splash_screen.dart';
 
+import 'features/fake_call/views/fake_call.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),
       themeMode: ThemeMode.light,
-      home: const SplashScreen(),
+      home: const FakeCall(),
 
       routes: AppRoutes.getRoutes(),
     );
