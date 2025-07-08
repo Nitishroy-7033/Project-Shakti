@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_shakti/features/add_friend/views/add_friend_screen.dart';
 import 'package:project_shakti/features/edit_friend/views/edit_friend_screen.dart';
+import 'package:project_shakti/features/home/views/home_screen.dart';
 import 'package:project_shakti/features/login/views/login_screen.dart';
 import 'package:project_shakti/features/signup/views/signup_screen.dart';
 import 'package:project_shakti/features/change_password/views/change_password_screen.dart';
@@ -37,6 +38,7 @@ class AppRoutes {
       changePassword: (context) => const ChangePasswordScreen(),
       editProfile: (context) => const EditProfileScreen(),
       fakeCall: (context) => const FakeCall(),
+      home: (context)=> const HomeScreen(),
     };
   }
 }

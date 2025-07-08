@@ -21,4 +21,7 @@ class AppStrings {
   // Singup screen
   static const String joinToShakti = "Join Shakti and start your journey today";
   static const String alreadyHaveAccount = "Already have an account?";
+
+  // Home Screen
+  static const String empowertinYourJourney = "Empowering Your Journey, Safely";
 }

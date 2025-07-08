@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:project_shakti/core/routes/routes.dart';
 import 'package:project_shakti/core/theme/app_theme.dart';
 
-import 'package:project_shakti/features/splash/views/splash_screen.dart';
-
 void main() {
   runApp(const MyApp());
 }
@@ -18,11 +16,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       // themeMode: themeController.isLightTheme.value
       //             ? ThemeMode.light
       //             : ThemeMode.dark,
-      initialRoute: AppRoutes.friendList,
+      initialRoute: AppRoutes.home,
       // home: const SplashScreen(),
       routes: AppRoutes.getRoutes(),
     );

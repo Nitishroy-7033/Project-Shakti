@@ -4,7 +4,7 @@ class AppIcons {
   static const IconData home = Icons.home;
   static const IconData settings = Icons.settings;
   static const IconData profile = Icons.person;
-  static const IconData notification = Icons.notifications;
+  static const IconData notification = Icons.notifications_none_rounded;
   static const IconData logout = Icons.logout;
   static const IconData search = Icons.search;
   static const IconData camera = Icons.camera_alt;
@@ -13,6 +13,12 @@ class AppIcons {
   static const IconData delete = Icons.delete;
   static const IconData heart = Icons.favorite;
   static const IconData bolt = Icons.bolt_rounded;
+  static const IconData schedule = Icons.schedule;
+  static const IconData checkCircle = Icons.check_circle_outline;
+  static const IconData emergency =  Icons.emergency;
+  static const IconData contactPhone =  Icons.contact_phone;
+  static const IconData phoneTalk =  Icons.phone_in_talk;
+  static const IconData lightBulb =  Icons.lightbulb_outline;
 
   // Custom use case icons
   static const IconData attendance = Icons.access_time;
