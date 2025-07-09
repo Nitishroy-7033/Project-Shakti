@@ -51,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ],
           ),
         ),
-        // bottomNavigationBar: _buildBottomNavigation(isDark),
       ),
     );
   }
@@ -463,123 +462,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ],
     );
   }
-
-  // Widget _buildBottomNavigation(bool isDark) {
-  //   final items = [
-  //     {'icon': Icons.home, 'activeIcon': Icons.home, 'label': 'Home'},
-  //     {'icon': Icons.route, 'activeIcon': Icons.route, 'label': 'Routes'},
-  //     {
-  //       'icon': Icons.warning_amber,
-  //       'activeIcon': Icons.warning,
-  //       'label': 'SOS',
-  //     },
-  //     {
-  //       'icon': Icons.lightbulb_outline,
-  //       'activeIcon': Icons.lightbulb,
-  //       'label': 'Tips',
-  //     },
-  //     {
-  //       'icon': Icons.settings,
-  //       'activeIcon': Icons.settings,
-  //       'label': 'Settings',
-  //     },
-  //   ];
-
-  //   return Container(
-  //     height: 80,
-  //     decoration: BoxDecoration(
-  //       color:
-  //           isDark
-  //               ? AppColors.primaryContainerDark
-  //               : AppColors.primaryContainerLight,
-  //       borderRadius: BorderRadius.only(
-  //         topLeft: Radius.circular(20),
-  //         topRight: Radius.circular(20),
-  //       ),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.black.withOpacity(isDark ? 0.4 : 0.1),
-  //           blurRadius: 10,
-  //           offset: Offset(0, -2),
-  //         ),
-  //       ],
-  //     ),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //       children:
-  //           items.asMap().entries.map((entry) {
-  //             int index = entry.key;
-  //             Map<String, dynamic> item = entry.value;
-  //             bool isSelected = _currentIndex == index;
-  //             bool isSOS = item['label'] == 'SOS';
-
-  //             return GestureDetector(
-  //               onTap: () {
-  //                 HapticFeedback.selectionClick();
-  //                 setState(() {
-  //                   _currentIndex = index;
-  //                 });
-  //               },
-  //               child: Container(
-  //                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     Container(
-  //                       width: 32,
-  //                       height: 32,
-  //                       decoration: BoxDecoration(
-  //                         color:
-  //                             isSelected
-  //                                 ? (isSOS
-  //                                         ? AppColors.primaryLight
-  //                                         : AppColors.secondaryLight)
-  //                                     .withOpacity(0.1)
-  //                                 : Colors.transparent,
-  //                         borderRadius: BorderRadius.circular(8),
-  //                       ),
-  //                       child: Icon(
-  //                         isSelected
-  //                             ? item['activeIcon'] as IconData
-  //                             : item['icon'] as IconData,
-  //                         color:
-  //                             isSelected
-  //                                 ? (isSOS
-  //                                     ? AppColors.primaryLight
-  //                                     : AppColors.secondaryLight)
-  //                                 : (isDark
-  //                                         ? AppColors.fontDark
-  //                                         : AppColors.fontLight)
-  //                                     .withOpacity(0.6),
-  //                         size: 20,
-  //                       ),
-  //                     ),
-  //                     SizedBox(height: 4),
-  //                     Text(
-  //                       item['label'] as String,
-  //                       style: TextStyle(
-  //                         fontSize: 10,
-  //                         fontWeight:
-  //                             isSelected ? FontWeight.w600 : FontWeight.w500,
-  //                         color:
-  //                             isSelected
-  //                                 ? (isSOS
-  //                                     ? AppColors.primaryLight
-  //                                     : AppColors.secondaryLight)
-  //                                 : (isDark
-  //                                         ? AppColors.fontDark
-  //                                         : AppColors.fontLight)
-  //                                     .withOpacity(0.6),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             );
-  //           }).toList(),
-  //     ),
-  //   );
-  // }
 
   Color _getSafetyColor() {
     if (safetyScore >= 80) return AppColors.successColor;

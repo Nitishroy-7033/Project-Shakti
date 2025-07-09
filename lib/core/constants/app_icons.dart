@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppIcons {
-  static const IconData home = Icons.home;
+  static const IconData home = Icons.home_rounded;
   static const IconData settings = Icons.settings;
   static const IconData profile = Icons.person;
   static const IconData notification = Icons.notifications_none_rounded;
