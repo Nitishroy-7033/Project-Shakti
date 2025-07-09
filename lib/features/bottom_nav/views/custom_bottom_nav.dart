@@ -10,19 +10,17 @@ class CustomBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CustomNavCubit(),
-      child: SafeArea(
-        child: Scaffold(
-          bottomNavigationBar: CustomNavContainer(),
-          body: BlocBuilder<CustomNavCubit, int>(
-            builder: (context, selectedIndex) {
-              final customNavCubit = context.read<CustomNavCubit>();
-              return PageView(
-                physics: NeverScrollableScrollPhysics(),
-                controller: customNavCubit.pageController,
-                children: customNavCubit.pages,
-              );
-            },
-          ),
+      child: Scaffold(
+        bottomNavigationBar: CustomNavContainer(),
+        body: BlocBuilder<CustomNavCubit, int>(
+          builder: (context, selectedIndex) {
+            final customNavCubit = context.read<CustomNavCubit>();
+            return PageView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: customNavCubit.pageController,
+              children: customNavCubit.pages,
+            );
+          },
         ),
       ),
     );
