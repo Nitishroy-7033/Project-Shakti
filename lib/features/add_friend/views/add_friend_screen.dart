@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:project_shakti/core/constants/app_icons.dart';
+import 'package:project_shakti/core/utils/ui_helper.dart';
+import 'package:project_shakti/core/widgets/custom_button.dart';
+import 'package:project_shakti/core/widgets/custom_text_field.dart';
 import 'package:project_shakti/features/friend_list/views/friend_list_page.dart';
 
 class AddFriendPage extends StatefulWidget {
   const AddFriendPage({super.key});
- 
+
   @override
   State<AddFriendPage> createState() => _AddFriendPageState();
 }
@@ -14,7 +17,6 @@ class AddFriendPage extends StatefulWidget {
 class _AddFriendPageState extends State<AddFriendPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
-  int _selectedIndex = 0;
 
   Future<void> _pickContact() async {
     try {
@@ -46,10 +48,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
                             if (fullContact != null &&
                                 fullContact.phones.isNotEmpty) {
                               setState(() {
-                                _nameController.text =
-                                    fullContact.displayName ?? '';
+                                _nameController.text = fullContact.displayName;
                                 _numberController.text =
-                                    fullContact.phones.first.number ?? '';
+                                    fullContact.phones.first.number;
                               });
                               Navigator.pop(context);
                             }
@@ -77,239 +78,164 @@ class _AddFriendPageState extends State<AddFriendPage> {
     }
   }
 
-  Widget _buildBottomItem(IconData icon, String label, int index) {
-    final isSelected = _selectedIndex == index;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: isSelected ? Colors.purple : Colors.grey),
-          if (isSelected)
-            Text(
-              label,
-              style: GoogleFonts.poppins(
-                color: Colors.purple,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final textStyle = GoogleFonts.poppins(fontSize: 16, color: Colors.black);
-
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(color: Colors.black),
-        backgroundColor: Colors.white,
+        leading: BackButton(color: Theme.of(context).colorScheme.primary),
         elevation: 0,
         title: Text(
-          'Shakti',
-          style: GoogleFonts.poppins(
-            color: Colors.purple,
-            fontWeight: FontWeight.w600,
-            fontSize: 22,
+          'Add Friend',
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Text(
-                  'Add Friend',
-                  style: GoogleFonts.poppins(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: UIHelper.paddingLarge,
+          vertical: UIHelper.paddingMedium,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Icon(
+                AppIcons.group,
+                size: 80,
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+            Text(
+              "Friend's Name",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingSmall),
+            CustomTextField(
+              controller: _nameController,
+              labelText: "Enter name",
+              icon: AppIcons.profile,
+              iconColor: Theme.of(context).colorScheme.tertiary,
+              keyboardType: TextInputType.name,
+              textInputAction: TextInputAction.done,
+            ),
+            SizedBox(height: 24),
+            Text(
+              "Friend's Number",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingSmall),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                    controller: _numberController,
+                    labelText: "Phone number",
+                    icon: AppIcons.phone,
+                    iconColor: Theme.of(context).colorScheme.tertiary,
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.done,
                   ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              const Center(
-                child: Icon(Icons.groups, size: 90, color: Colors.grey),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "Add Friend's name",
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _nameController,
-                style: textStyle,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter name',
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                "Add Friend's number",
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _numberController,
-                      keyboardType: TextInputType.phone,
-                      style: textStyle,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: '+91 9876543210',
-                      ),
+                const SizedBox(width: 10),
+                InkWell(
+                  onTap: _pickContact,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.contacts,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  SizedBox(
-                    height: 58,
-                    width: 52,
-                    child: ElevatedButton(
-                      onPressed: _pickContact,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade200,
-                        foregroundColor: Colors.black,
-                        padding: EdgeInsets.zero,
-                        elevation: 0,
+                ),
+              ],
+            ),
+            SizedBox(height: 30),
+            CustomButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FriendListPage(),
+                  ),
+                );
+              },
+              text: "Add Friend",
+            ),
+            SizedBox(height: 30),
+
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.5),
+                ),
+                color: Theme.of(context).colorScheme.primaryContainer,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
-                      child: const Icon(Icons.contacts, size: 24),
+                      const SizedBox(width: 8),
+                      Text(
+                        "Who are Friends?",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Friends are someone who will receive your live location when you use Guard me & SOS feature.',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.warning_amber_outlined,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        "What is SOS button?",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'SOS button alerts your friends & local authorities during the time of an emergency.',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                     ),
                   ),
                 ],
               ),
-              // Rest of your existing body content remains unchanged
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.purple.shade100),
-                  color: Colors.purple.shade50.withOpacity(0.3),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.info_outline, color: Colors.purple),
-                        const SizedBox(width: 8),
-                        Text(
-                          "Who are Friends?",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.purple,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Friends are someone who will receive your live location when you use Guard me & SOS feature.',
-                      style: GoogleFonts.poppins(fontSize: 15),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.warning_amber_outlined,
-                          color: Colors.purple,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "What is SOS button?",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.purple,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'SOS button alerts your friends & local authorities during the time of an emergency.',
-                      style: GoogleFonts.poppins(fontSize: 15),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const FriendListPage(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 16,
-                    ),
-                  ),
-                  child: Text(
-                    'Add Friend',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 100),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        height: 70,
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 6,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildBottomItem(Icons.shield, 'Guard Me', 0),
-            _buildBottomItem(Icons.mic, 'Record', 1),
-            const SizedBox(width: 40),
-            _buildBottomItem(Icons.call, 'Fake Call', 2),
-            _buildBottomItem(Icons.person, 'Profile', 3),
+            ),
           ],
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.purple,
-        onPressed: () {},
-        child: const Icon(Icons.notifications_active),
       ),
     );
   }
