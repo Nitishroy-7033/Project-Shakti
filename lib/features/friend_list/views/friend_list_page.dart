@@ -15,13 +15,12 @@ class FriendListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        leading: BackButton(color: Theme.of(context).colorScheme.onPrimary),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        leading: BackButton(color: Theme.of(context).colorScheme.primary),
         centerTitle: true,
         title: Text(
           AppStrings.appNameLower,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),

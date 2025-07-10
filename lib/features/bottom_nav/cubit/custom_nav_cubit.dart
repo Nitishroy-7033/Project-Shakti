@@ -13,8 +13,8 @@ class CustomNavCubit extends Cubit<int> {
   final List<Widget> pages = const [
     HomeScreen(),
     FriendListPage(),
-    FakeCall(),
     ChangePasswordScreen(),
+    FakeCall(),
     EditFriendPage(),
   ];
 

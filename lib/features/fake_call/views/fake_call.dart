@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/constants/app_images.dart';
+import 'package:project_shakti/core/theme/app_colors.dart';
+import 'package:project_shakti/core/utils/ui_helper.dart';
 
 class FakeCall extends StatelessWidget {
   const FakeCall({super.key});
@@ -8,106 +11,92 @@ class FakeCall extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: size.height * 0.05),
-
-            // Profile Image
-            CircleAvatar(
-              radius: size.width * 0.15,
-              backgroundImage: AssetImage("assets/images/police.png"),
+      body: Column(
+        children: [
+          SizedBox(height: 100),
+          // Profile Image
+          CircleAvatar(
+            radius: 50,
+            backgroundImage: AssetImage(AppImages.policePhoto),
+          ),
+          UIHelper.getVerticalSpace(UIHelper.paddingSmall),
+          // Call Status
+          // Call Duration
+          Text(
+            "02:36",
+            style: TextStyle(
+              fontSize: 24,
+              color: Theme.of(context).colorScheme.tertiary,
+              fontWeight: FontWeight.normal,
             ),
-            const SizedBox(height: 20),
-
-            // Call Status
-            const Text(
-              "On Call",
-              style: TextStyle(fontSize: 18, color: Colors.black54),
+          ),
+          Text("On Call", style: Theme.of(context).textTheme.bodySmall),
+          UIHelper.getVerticalSpace(UIHelper.paddingSmall),
+          // Contact Name
+          Text("Police", style: Theme.of(context).textTheme.headlineLarge),
+          // Emergency Number
+          Text(
+            "Emergency - 1091",
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.tertiary,
             ),
-            const SizedBox(height: 5),
+          ),
 
-            // Contact Name
-            const Text(
-              "Police",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          const Spacer(),
+
+          // Call Controls Container with increased height
+          Container(
+            height: 260,
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
             ),
-            const SizedBox(height: 5),
-
-            // Emergency Number
-            const Text(
-              "Emergency - 1091",
-              style: TextStyle(fontSize: 18, color: Colors.black54),
-            ),
-            const SizedBox(height: 5),
-
-            // Call Duration
-            const Text(
-              "0:00",
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-
-            const Spacer(),
-
-            // Call Controls Container with increased height
-            Container(
-              height: size.height * 0.35,
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+            child: Column(
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 30,
+                  runSpacing: 20,
+                  children: [
+                    _CallButton(icon: Icons.dialpad, label: "Keypad"),
+                    _CallButton(icon: Icons.mic_off, label: "Mute"),
+                    _CallButton(
+                      icon: Icons.volume_up,
+                      label: "Speaker",
+                      iconColor: Theme.of(context).colorScheme.onPrimary,
+                      bgColor: Theme.of(context).colorScheme.primary,
+                    ),
+                    _CallButton(icon: Icons.more_horiz, label: "More"),
+                  ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
-                    spreadRadius: 2,
-                    blurRadius: 6,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 30,
-                    runSpacing: 20,
-                    children: [
-                      _CallButton(icon: Icons.dialpad, label: "Keypad"),
-                      _CallButton(icon: Icons.mic_off, label: "Mute"),
-                      _CallButton(
-                        icon: Icons.volume_up,
-                        label: "Speaker",
-                        iconColor: Colors.white,
-                        bgColor: Colors.deepPurple,
+                const SizedBox(height: 30),
+                // End Call Button
+                Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundColor: AppColors.errorColor,
+                      child: Icon(
+                        Icons.call_end,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
-                      _CallButton(icon: Icons.more_horiz, label: "More"),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-
-                  // End Call Button
-                  Column(
-                    children: const [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.red,
-                        child: Icon(Icons.call_end, color: Colors.white),
-                      ),
-                      SizedBox(height: 8),
-                      Text("End Call", style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "End Call",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -132,11 +121,20 @@ class _CallButton extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 25,
-          backgroundColor: bgColor ?? Colors.grey.shade200,
-          child: Icon(icon, color: iconColor ?? Colors.black),
+          backgroundColor: bgColor ?? Theme.of(context).colorScheme.surface,
+          child: Icon(
+            icon,
+            color:
+                iconColor ?? Theme.of(context).colorScheme.onPrimaryContainer,
+          ),
         ),
         const SizedBox(height: 8),
-        Text(label, style: const TextStyle(fontSize: 14)),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+          ),
+        ),
       ],
     );
   }
