@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_shakti/core/routes/routes.dart';
 import 'package:project_shakti/core/theme/app_theme.dart';
+import 'package:project_shakti/features/on_boarding/on_boarding_screen.dart';
 
 import 'package:project_shakti/features/splash/views/splash_screen.dart';
 
@@ -19,9 +20,9 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),
       themeMode: ThemeMode.light,
-      home: const SplashScreen(),
+      home: const OnBoardingScreen(),
 
-      routes: AppRoutes.getRoutes(),
+      //routes: AppRoutes.getRoutes(),
     );
   }
 }
