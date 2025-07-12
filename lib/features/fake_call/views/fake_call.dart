@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CallScreen extends StatelessWidget {
-  const CallScreen({super.key});
+class FakeCall extends StatelessWidget {
+  const FakeCall({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,20 +24,14 @@ class CallScreen extends StatelessWidget {
             // Call Status
             const Text(
               "On Call",
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.black54,
-              ),
+              style: TextStyle(fontSize: 18, color: Colors.black54),
             ),
             const SizedBox(height: 5),
 
             // Contact Name
             const Text(
               "Police",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 5),
 
@@ -84,24 +78,15 @@ class CallScreen extends StatelessWidget {
                     spacing: 30,
                     runSpacing: 20,
                     children: [
-                      _CallButton(
-                        icon: Icons.dialpad,
-                        label: "Keypad",
-                      ),
-                      _CallButton(
-                        icon: Icons.mic_off,
-                        label: "Mute",
-                      ),
+                      _CallButton(icon: Icons.dialpad, label: "Keypad"),
+                      _CallButton(icon: Icons.mic_off, label: "Mute"),
                       _CallButton(
                         icon: Icons.volume_up,
                         label: "Speaker",
                         iconColor: Colors.white,
                         bgColor: Colors.deepPurple,
                       ),
-                      _CallButton(
-                        icon: Icons.more_horiz,
-                        label: "More",
-                      ),
+                      _CallButton(icon: Icons.more_horiz, label: "More"),
                     ],
                   ),
                   const SizedBox(height: 30),
@@ -115,10 +100,7 @@ class CallScreen extends StatelessWidget {
                         child: Icon(Icons.call_end, color: Colors.white),
                       ),
                       SizedBox(height: 8),
-                      Text(
-                        "End Call",
-                        style: TextStyle(fontSize: 16),
-                      ),
+                      Text("End Call", style: TextStyle(fontSize: 16)),
                     ],
                   ),
                 ],
@@ -154,10 +136,7 @@ class _CallButton extends StatelessWidget {
           child: Icon(icon, color: iconColor ?? Colors.black),
         ),
         const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 14),
-        ),
+        Text(label, style: const TextStyle(fontSize: 14)),
       ],
     );
   }

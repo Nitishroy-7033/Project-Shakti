@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'AddFriendPage.dart';
-import 'EditFriendPage.dart';
+import 'package:project_shakti/features/add_friend/views/add_friend_screen.dart';
+import 'package:project_shakti/features/edit_friend/views/edit_friend_screen.dart';
 
 class FriendListPage extends StatelessWidget {
   const FriendListPage({super.key});
@@ -49,10 +49,7 @@ class FriendListPage extends StatelessWidget {
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style: GoogleFonts.poppins(
-                  fontSize: 15,
-                  color: Colors.black,
-                ),
+                style: GoogleFonts.poppins(fontSize: 15, color: Colors.black),
                 children: const [
                   TextSpan(text: 'Guard me '),
                   TextSpan(
@@ -95,7 +92,9 @@ class FriendListPage extends StatelessWidget {
                 children: [
                   const CircleAvatar(
                     radius: 24,
-                    backgroundImage: AssetImage('assets/avatar.png'), // Use a placeholder or network image
+                    backgroundImage: AssetImage(
+                      'assets/avatar.png',
+                    ), // Use a placeholder or network image
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -109,10 +108,7 @@ class FriendListPage extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Text(
-                          number,
-                          style: GoogleFonts.poppins(fontSize: 14),
-                        ),
+                        Text(number, style: GoogleFonts.poppins(fontSize: 14)),
                       ],
                     ),
                   ),
@@ -120,17 +116,16 @@ class FriendListPage extends StatelessWidget {
                     onPressed: () {
                       // edit friend logic
                       Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditFriendPage(
-          name: name,
-          number: number,
-        ),
-      ),
-    );
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) =>
+                                  EditFriendPage(name: name, number: number),
+                        ),
+                      );
                     },
                     icon: const Icon(Icons.edit, color: Colors.grey),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -139,11 +134,11 @@ class FriendListPage extends StatelessWidget {
               onTap: () {
                 // Navigate to AddFriendPage
                 Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const AddFriendPage(),
-      ),
-    );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddFriendPage(),
+                  ),
+                );
               },
               child: Column(
                 children: [

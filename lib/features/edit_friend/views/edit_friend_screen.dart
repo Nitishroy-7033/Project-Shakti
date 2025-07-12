@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EditFriendPage extends StatefulWidget {
-  final String name;
-  final String number;
+  final String? name;
+  final String? number;
 
-  const EditFriendPage({super.key, required this.name, required this.number});
+  const EditFriendPage({super.key, this.name, this.number});
 
   @override
   State<EditFriendPage> createState() => _EditFriendPageState();
@@ -94,7 +94,9 @@ class _EditFriendPageState extends State<EditFriendPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 14),
+                      horizontal: 40,
+                      vertical: 14,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -108,7 +110,7 @@ class _EditFriendPageState extends State<EditFriendPage> {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
