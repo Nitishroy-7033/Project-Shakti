@@ -396,7 +396,7 @@ class _SignUpScreenState extends State<SignUpScreen>
     Brightness brightness,
     VoidCallback onPressed,
   ) {
-    return Container(
+    return SizedBox(
       height: 48,
       child: OutlinedButton(
         onPressed: onPressed,

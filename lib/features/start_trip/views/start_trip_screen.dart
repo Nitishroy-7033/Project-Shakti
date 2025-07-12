@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -5,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:project_shakti/core/widgets/custom_button.dart';
-import 'package:project_shakti/core/widgets/custom_text_field.dart';
 
 class TripMapScreen extends StatefulWidget {
   const TripMapScreen({super.key});
@@ -18,35 +17,38 @@ class TripMapScreen extends StatefulWidget {
 class _TripMapScreenState extends State<TripMapScreen> {
   late GoogleMapController _mapController;
 
-  // Controllers
   final _sourceController = TextEditingController();
   final _destinationController = TextEditingController();
   final _dateTimeController = TextEditingController();
 
-  // Trip data
   LatLng? _sourceLatLng;
   LatLng? _destinationLatLng;
   List<LatLng> _polylinePoints = [];
   String _selectedMode = "Bicycling";
   DateTime? _selectedDateTime;
 
-  // Animation
   int _currentProgressIndex = 0;
   bool _isLoading = false;
   bool _isTripActive = false;
+
+  Timer? _tripTimer;
 
   static const String _apiKey = "AIzaSyDK4ylJEGO07EmXn9FFybZDzKy_7k2Mo40";
   static const LatLng _defaultLocation = LatLng(28.6139, 77.2090);
 
   @override
   void dispose() {
+    _tripTimer?.cancel();
     _sourceController.dispose();
     _destinationController.dispose();
     _dateTimeController.dispose();
     super.dispose();
   }
 
-  // Get coordinates from address
+  void _onMapCreated(GoogleMapController controller) {
+    _mapController = controller;
+  }
+
   Future<LatLng?> _getCoordinates(String place) async {
     try {
       List<Location> locations = await locationFromAddress(place);
@@ -59,7 +61,6 @@ class _TripMapScreenState extends State<TripMapScreen> {
     return null;
   }
 
-  // Get route from Google Directions API
   Future<void> _getRoute() async {
     if (_sourceLatLng == null || _destinationLatLng == null) return;
 
@@ -85,7 +86,6 @@ class _TripMapScreenState extends State<TripMapScreen> {
     }
   }
 
-  // Decode polyline points
   List<LatLng> _decodePolyline(String encoded) {
     List<LatLng> points = [];
     int index = 0, len = encoded.length;
@@ -116,25 +116,30 @@ class _TripMapScreenState extends State<TripMapScreen> {
     return points;
   }
 
-  // Simulate travel progress
-  void _simulateTravelProgress() async {
+  void _simulateTravelProgress() {
     setState(() => _isTripActive = true);
+    _currentProgressIndex = 0;
 
-    for (int i = 0; i < _polylinePoints.length; i++) {
-      if (!_isTripActive) break;
-      await Future.delayed(const Duration(milliseconds: 300));
-      if (mounted) {
-        setState(() => _currentProgressIndex = i);
+    _tripTimer = Timer.periodic(const Duration(milliseconds: 300), (timer) {
+      if (!_isTripActive ||
+          _currentProgressIndex >= _polylinePoints.length - 1) {
+        timer.cancel();
+        setState(() {
+          _isTripActive = false;
+          _currentProgressIndex = _polylinePoints.length - 1;
+        });
+        _showSuccessSnackBar("Trip completed!");
+        return;
       }
-    }
 
-    if (mounted) {
-      setState(() => _isTripActive = false);
-      _showSuccessSnackBar("Trip completed!");
-    }
+      if (mounted) {
+        setState(() {
+          _currentProgressIndex++;
+        });
+      }
+    });
   }
 
-  // Start trip
   Future<void> _startTrip() async {
     if (!_validateInputs()) return;
 
@@ -155,7 +160,17 @@ class _TripMapScreenState extends State<TripMapScreen> {
       _destinationLatLng = destination;
 
       await _getRoute();
-      _animateToRoute();
+
+      if (_polylinePoints.isEmpty) {
+        _showErrorSnackBar("No route found. Please try another location.");
+        return;
+      }
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _animateToRoute();
+      });
+
+      await Future.delayed(const Duration(milliseconds: 300));
       _simulateTravelProgress();
     } catch (e) {
       _showErrorSnackBar("Failed to start trip: $e");
@@ -164,15 +179,14 @@ class _TripMapScreenState extends State<TripMapScreen> {
     }
   }
 
-  // Stop trip
   void _stopTrip() {
+    _tripTimer?.cancel();
     setState(() {
       _isTripActive = false;
       _currentProgressIndex = 0;
     });
   }
 
-  // Validate inputs
   bool _validateInputs() {
     if (_sourceController.text.trim().isEmpty ||
         _destinationController.text.trim().isEmpty) {
@@ -182,7 +196,6 @@ class _TripMapScreenState extends State<TripMapScreen> {
     return true;
   }
 
-  // Animate camera to show route
   void _animateToRoute() {
     if (_sourceLatLng != null && _destinationLatLng != null) {
       _mapController.animateCamera(
@@ -203,7 +216,6 @@ class _TripMapScreenState extends State<TripMapScreen> {
     }
   }
 
-  // Pick date and time
   Future<void> _pickDateTime() async {
     final date = await showDatePicker(
       context: context,
@@ -232,7 +244,6 @@ class _TripMapScreenState extends State<TripMapScreen> {
     });
   }
 
-  // Show error snackbar
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -243,7 +254,6 @@ class _TripMapScreenState extends State<TripMapScreen> {
     );
   }
 
-  // Show success snackbar
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -257,12 +267,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Trip Planner"),
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        foregroundColor: Theme.of(context).textTheme.bodyLarge?.color,
-      ),
+      appBar: AppBar(title: const Text("Trip Planner")),
       body: Column(
         children: [
           _buildTripForm(),
@@ -274,31 +279,39 @@ class _TripMapScreenState extends State<TripMapScreen> {
     );
   }
 
-  // Build trip form
   Widget _buildTripForm() {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          CustomTextField(
-            labelText: "Start Location",
-            prefixIcon: Icons.my_location,
+          TextField(
             controller: _sourceController,
+            decoration: const InputDecoration(
+              labelText: "Start Location",
+              prefixIcon: Icon(Icons.my_location),
+              border: OutlineInputBorder(),
+            ),
           ),
           const SizedBox(height: 12),
-          CustomTextField(
-            labelText: "Destination",
-            prefixIcon: Icons.location_on,
+          TextField(
             controller: _destinationController,
+            decoration: const InputDecoration(
+              labelText: "Destination",
+              prefixIcon: Icon(Icons.location_on),
+              border: OutlineInputBorder(),
+            ),
           ),
           const SizedBox(height: 12),
           GestureDetector(
             onTap: _pickDateTime,
             child: AbsorbPointer(
-              child: CustomTextField(
-                labelText: "Date & Time",
-                prefixIcon: Icons.access_time,
+              child: TextField(
                 controller: _dateTimeController,
+                decoration: const InputDecoration(
+                  labelText: "Date & Time",
+                  prefixIcon: Icon(Icons.access_time),
+                  border: OutlineInputBorder(),
+                ),
               ),
             ),
           ),
@@ -309,41 +322,31 @@ class _TripMapScreenState extends State<TripMapScreen> {
     );
   }
 
-  // Build mode selector
   Widget _buildModeSelector() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(12),
+    return DropdownButtonFormField<String>(
+      value: _selectedMode,
+      decoration: const InputDecoration(
+        labelText: "Travel Mode",
+        border: OutlineInputBorder(),
       ),
-      child: DropdownButton<String>(
-        value: _selectedMode,
-        isExpanded: true,
-        underline: const SizedBox(),
-        icon: const Icon(Icons.keyboard_arrow_down),
-        onChanged: (value) {
-          setState(() => _selectedMode = value!);
-        },
-        items:
-            ["Walking", "Driving", "Bicycling", "Transit"].map((mode) {
-              return DropdownMenuItem<String>(
-                value: mode,
-                child: Row(
-                  children: [
-                    Icon(_getModeIcon(mode), size: 20),
-                    const SizedBox(width: 8),
-                    Text(mode),
-                  ],
-                ),
-              );
-            }).toList(),
-      ),
+      onChanged: (value) {
+        setState(() => _selectedMode = value!);
+      },
+      items: ["Walking", "Driving", "Bicycling", "Transit"].map((mode) {
+        return DropdownMenuItem<String>(
+          value: mode,
+          child: Row(
+            children: [
+              Icon(_getModeIcon(mode), size: 20),
+              const SizedBox(width: 8),
+              Text(mode),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 
-  // Get mode icon
   IconData _getModeIcon(String mode) {
     switch (mode) {
       case "Walking":
@@ -359,21 +362,11 @@ class _TripMapScreenState extends State<TripMapScreen> {
     }
   }
 
-  // Build map container
   Widget _buildMapContainer() {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: GoogleMap(
@@ -383,18 +376,15 @@ class _TripMapScreenState extends State<TripMapScreen> {
             ),
             markers: _buildMarkers(),
             polylines: _buildPolylines(),
-            onMapCreated: (controller) => _mapController = controller,
+            onMapCreated: _onMapCreated,
             myLocationButtonEnabled: false,
             zoomControlsEnabled: false,
-            compassEnabled: false,
-            mapToolbarEnabled: false,
           ),
         ),
       ),
     );
   }
 
-  // Build markers
   Set<Marker> _buildMarkers() {
     Set<Marker> markers = {};
 
@@ -435,7 +425,6 @@ class _TripMapScreenState extends State<TripMapScreen> {
     return markers;
   }
 
-  // Build polylines
   Set<Polyline> _buildPolylines() {
     Set<Polyline> polylines = {};
 
@@ -446,7 +435,6 @@ class _TripMapScreenState extends State<TripMapScreen> {
           color: Colors.blue.shade300,
           width: 5,
           points: _polylinePoints,
-          patterns: [PatternItem.dash(20), PatternItem.gap(10)],
         ),
       );
 
@@ -465,38 +453,38 @@ class _TripMapScreenState extends State<TripMapScreen> {
     return polylines;
   }
 
-  // Build action buttons
   Widget _buildActionButtons() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
           Expanded(
-            child: CustomButton(
-              text:
-                  _isLoading
-                      ? "Loading..."
-                      : _isTripActive
-                      ? "Stop Trip"
-                      : "Start Trip",
-              backgroundColor: _isTripActive ? Colors.orange : Colors.green,
-              onPressed:
-                  _isLoading
-                      ? null
-                      : _isTripActive
-                      ? _stopTrip
-                      : _startTrip,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _isTripActive ? Colors.orange : Colors.green,
+              ),
+              onPressed: _isLoading
+                  ? null
+                  : _isTripActive
+                  ? _stopTrip
+                  : _startTrip,
+              child: Text(
+                _isLoading
+                    ? "Loading..."
+                    : _isTripActive
+                    ? "Stop Trip"
+                    : "Start Trip",
+              ),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: CustomButton(
-              text: "SOS",
-              backgroundColor: Colors.red,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               onPressed: () {
-                // TODO: Implement SOS functionality
                 _showErrorSnackBar("SOS feature not implemented yet");
               },
+              child: const Text("SOS"),
             ),
           ),
         ],

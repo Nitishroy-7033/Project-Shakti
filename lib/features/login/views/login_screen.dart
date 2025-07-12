@@ -340,7 +340,7 @@ class _LoginScreenState extends State<LoginScreen>
     Brightness brightness,
     VoidCallback onPressed,
   ) {
-    return Container(
+    return SizedBox(
       height: 52,
       child: OutlinedButton.icon(
         onPressed: onPressed,
