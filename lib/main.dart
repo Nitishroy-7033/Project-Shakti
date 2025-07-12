@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_shakti/core/routes/routes.dart';
 import 'package:project_shakti/core/theme/app_theme.dart';
-
-import 'package:project_shakti/features/splash_screen/views/splash_screen.dart';
-
-import 'features/fake_call/views/fake_call.dart';
+import 'package:project_shakti/core/utils/update_status_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,12 +15,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Shakti',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme(),
-      darkTheme: AppTheme.darkTheme(),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
-      home: const FakeCall(),
-
+      // themeMode: themeController.isLightTheme.value
+      //             ? ThemeMode.light
+      //             : ThemeMode.dark,
+      initialRoute: AppRoutes.bottomNav,//isLogin ? splash : onboarding
       routes: AppRoutes.getRoutes(),
+      builder: (context, child) {
+        updateStatusBar(context);
+        return child!;
+      },
     );
   }
 }

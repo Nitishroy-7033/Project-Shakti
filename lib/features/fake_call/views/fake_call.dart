@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/theme/app_colors.dart';
+import 'package:project_shakti/core/theme/app_text_styles.dart';
 
 class FakeCall extends StatelessWidget {
   const FakeCall({super.key});
@@ -8,7 +10,6 @@ class FakeCall extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -22,30 +23,30 @@ class FakeCall extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Call Status
-            const Text(
+            Text(
               "On Call",
-              style: TextStyle(fontSize: 18, color: Colors.black54),
+              style: AppTextStyles.subheading(Theme.of(context).brightness),
             ),
             const SizedBox(height: 5),
 
             // Contact Name
-            const Text(
+            Text(
               "Police",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: AppTextStyles.heading1(Theme.of(context).brightness),
             ),
             const SizedBox(height: 5),
 
             // Emergency Number
-            const Text(
+            Text(
               "Emergency - 1091",
-              style: TextStyle(fontSize: 18, color: Colors.black54),
+              style: AppTextStyles.subheading(Theme.of(context).brightness),
             ),
             const SizedBox(height: 5),
 
             // Call Duration
-            const Text(
+            Text(
               "0:00",
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              style: AppTextStyles.subheading(Theme.of(context).brightness),
             ),
 
             const Spacer(),
@@ -56,19 +57,11 @@ class FakeCall extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).scaffoldBackgroundColor,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
-                    spreadRadius: 2,
-                    blurRadius: 6,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -84,23 +77,31 @@ class FakeCall extends StatelessWidget {
                         icon: Icons.volume_up,
                         label: "Speaker",
                         iconColor: Colors.white,
-                        bgColor: Colors.deepPurple,
+                        bgColor:
+                            Theme.of(context).brightness == Brightness.light
+                                ? AppColors.primaryLight
+                                : AppColors.labelDark,
                       ),
                       _CallButton(icon: Icons.more_horiz, label: "More"),
                     ],
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 50),
 
                   // End Call Button
                   Column(
-                    children: const [
+                    children: [
                       CircleAvatar(
                         radius: 30,
                         backgroundColor: Colors.red,
                         child: Icon(Icons.call_end, color: Colors.white),
                       ),
                       SizedBox(height: 8),
-                      Text("End Call", style: TextStyle(fontSize: 16)),
+                      Text(
+                        "End Call",
+                        style: AppTextStyles.subheading(
+                          Theme.of(context).brightness,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -130,13 +131,12 @@ class _CallButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CircleAvatar(
-          radius: 25,
-          backgroundColor: bgColor ?? Colors.grey.shade200,
-          child: Icon(icon, color: iconColor ?? Colors.black),
-        ),
+        CircleAvatar(radius: 25, child: Icon(icon)),
         const SizedBox(height: 8),
-        Text(label, style: const TextStyle(fontSize: 14)),
+        Text(
+          label,
+          style: AppTextStyles.subheading(Theme.of(context).brightness),
+        ),
       ],
     );
   }
