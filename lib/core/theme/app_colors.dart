@@ -48,7 +48,9 @@ class AppColor {
 
   // ----------------- Error Colors -----------------
   static const Color errorLight = Color(0xFFEF5350); // Light mode error (red)
-  static const Color errorDark = Color(0xFFEF5350); // Dark mode error (red)
+  static const Color errorDark = Color(0xFFEF5350);
+
+  static var primaryColor; // Dark mode error (red)
 
   // ----------------- Getters for Theme Mode -----------------
   static Color background(Brightness brightness) =>

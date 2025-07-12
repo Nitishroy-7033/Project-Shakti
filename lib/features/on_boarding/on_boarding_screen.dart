@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:project_shakti/features/on_boarding/pages/emergency_alert_page.dart';
-import 'package:project_shakti/features/on_boarding/pages/location_review_page.dart';
-import 'package:project_shakti/features/on_boarding/pages/share_location_page.dart';
+import 'package:project_shakti/features/on_boarding/views/emergency_alert_page.dart';
+import 'package:project_shakti/features/on_boarding/views/location_review_page.dart';
+import 'package:project_shakti/features/on_boarding/views/share_location_page.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnBoardingScreen extends StatefulWidget {
