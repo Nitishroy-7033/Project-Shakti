@@ -20,6 +20,7 @@ class AppIcons {
   static const IconData phoneTalk =  Icons.phone_in_talk;
   static const IconData lightBulb =  Icons.lightbulb_outline;
   static const IconData phone =  Icons.phone_rounded;
+  static const IconData lock =  Icons.lock_outline_rounded;
 
   // Custom use case icons
   static const IconData attendance = Icons.access_time;

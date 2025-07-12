@@ -4,6 +4,8 @@ import 'package:project_shakti/features/bottom_nav/views/custom_bottom_nav.dart'
 import 'package:project_shakti/features/edit_friend/views/edit_friend_screen.dart';
 import 'package:project_shakti/features/home/views/home_screen.dart';
 import 'package:project_shakti/features/login/views/login_screen.dart';
+import 'package:project_shakti/features/onboarding/views/on_boarding_screen.dart';
+import 'package:project_shakti/features/profile/views/profile_screen.dart';
 import 'package:project_shakti/features/signup/views/signup_screen.dart';
 import 'package:project_shakti/features/change_password/views/change_password_screen.dart';
 import 'package:project_shakti/features/edit_profile/views/edit_profile_screen.dart';
@@ -24,13 +26,14 @@ class AppRoutes {
   static const String editProfile = '/edit_profile';
   static const String fakeCall = '/fake_call';
   static const String bottomNav = '/bottom_nav';
+  static const String onBoarding = '/onBoarding';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
       splash: (context) => const SplashScreen(),
       login: (context) => const LoginScreen(),
       signup: (context) => const SignUpScreen(),
-      // profile: (context) => const ProfileScreen(),
+      profile: (context) => const ProfileScreen(),
       friendList: (context) => const FriendListPage(),
       addFriend: (context) => const AddFriendPage(),
       editFriend: (context) => const EditFriendPage(),
@@ -39,6 +42,7 @@ class AppRoutes {
       fakeCall: (context) => const FakeCall(),
       home: (context)=> const HomeScreen(),
       bottomNav: (context) =>const CustomBottomNav(),
+      onBoarding: (context)=>const  OnBoardingScreen(),
     };
   }
 }

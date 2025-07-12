@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       // themeMode: themeController.isLightTheme.value
       //             ? ThemeMode.light
       //             : ThemeMode.dark,
-      initialRoute: AppRoutes.addFriend,
+      initialRoute: AppRoutes.bottomNav,//isLogin ? splash : onboarding
       routes: AppRoutes.getRoutes(),
       builder: (context, child) {
         updateStatusBar(context);
