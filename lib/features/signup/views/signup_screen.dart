@@ -303,7 +303,7 @@ class _SignUpScreenState extends State<SignUpScreen>
             onPressed:
                 _acceptTerms
                     ? () {
-                      Navigator.pushReplacementNamed(context, '/splash');
+                      Navigator.pushReplacementNamed(context, '/login');
                     }
                     : null,
             isEnabled: _acceptTerms,
