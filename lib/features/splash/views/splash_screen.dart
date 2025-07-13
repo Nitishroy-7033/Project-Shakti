@@ -88,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen>
     // Navigate after delay
     Future.delayed(const Duration(seconds: 4), () {
       if (mounted) {
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushReplacementNamed(context, '/onBoarding');
       }
     });
   }
@@ -245,13 +245,6 @@ class _SplashScreenState extends State<SplashScreen>
                         ).colorScheme.onPrimary.withValues(alpha: 0.3),
                         width: 1.5,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.blackCommon.withValues(alpha: 0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
                     ),
                     child: Column(
                       children: [
