@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/constants/app_images.dart';
 
 class ShareLocationPage extends StatelessWidget {
   const ShareLocationPage({super.key});
@@ -13,10 +14,7 @@ class ShareLocationPage extends StatelessWidget {
           SizedBox(height: 80),
           SizedBox(
             height: 300,
-            child: Image.asset(
-              'assets/images/share_location_illustration.png',
-              fit: BoxFit.fill,
-            ),
+            child: Image.asset(AppImages.onBoarding2, fit: BoxFit.fill),
           ),
           // Title
           Text(

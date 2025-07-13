@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/constants/app_images.dart';
 
 class LocationReviewPage extends StatelessWidget {
   const LocationReviewPage({super.key});
@@ -13,10 +14,7 @@ class LocationReviewPage extends StatelessWidget {
           SizedBox(height: 80),
           SizedBox(
             height: 300,
-            child: Image.asset(
-              'assets/images/location_review_illustration.png',
-              fit: BoxFit.fill,
-            ),
+            child: Image.asset(AppImages.onBoarding3, fit: BoxFit.fill),
           ),
           // Title
           Text(

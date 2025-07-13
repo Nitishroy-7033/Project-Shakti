@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/constants/app_images.dart';
 
 class EmergencyAlertPage extends StatelessWidget {
   const EmergencyAlertPage({super.key});
@@ -13,10 +14,7 @@ class EmergencyAlertPage extends StatelessWidget {
           SizedBox(height: 80),
           SizedBox(
             height: 300,
-            child: Image.asset(
-              'assets/images/emergency_alert_illustration.png',
-              fit: BoxFit.fill,
-            ),
+            child: Image.asset(AppImages.onBoarding1, fit: BoxFit.fill),
           ),
           // Title
           Text(

@@ -60,7 +60,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       //skip
                       GestureDetector(
                         onTap: () {
-                          _controller.jumpToPage(2);
+                          _controller.animateToPage(
+                            2,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeIn,
+                          );
                         },
                         child: Text(
                           'Skip',
@@ -78,7 +82,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             Navigator.pushReplacementNamed(context, '/login');
                           } else {
                             _controller.nextPage(
-                              duration: Duration(milliseconds: 500),
+                              duration: Duration(milliseconds: 300),
                               curve: Curves.easeIn,
                             );
                           }
