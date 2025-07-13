@@ -17,11 +17,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       // themeMode: themeController.isLightTheme.value
       //             ? ThemeMode.light
       //             : ThemeMode.dark,
-      initialRoute: AppRoutes.onBoarding, //isLogin ? splash : onboarding
+      initialRoute: AppRoutes.bottomNav, //isLogin ? splash : onboarding
       routes: AppRoutes.getRoutes(),
       builder: (context, child) {
         updateStatusBar(context);
