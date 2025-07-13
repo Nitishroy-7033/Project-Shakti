@@ -8,53 +8,27 @@ class LocationReviewPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 20,
         children: [
-          // Illustration
-          Container(
-            height: 280,
-            width: double.infinity,
-            margin: const EdgeInsets.only(bottom: 40),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.grey[100],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                'assets/images/location_review_illustration.png',
-                fit: BoxFit.cover,
-              ),
+          SizedBox(height: 80),
+          SizedBox(
+            height: 300,
+            child: Image.asset(
+              'assets/images/location_review_illustration.png',
+              fit: BoxFit.fill,
             ),
           ),
-
           // Title
           Text(
             'Location Review',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              letterSpacing: -0.5,
-            ),
-            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineLarge,
           ),
-
-          SizedBox(height: 20),
-
           // Description
           Text(
             'Users can review reports of sexual harassment cases and their location right when the report goes online so that they can prepare themselves if they go to that location.',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-              height: 1.5,
-              letterSpacing: 0.2,
-            ),
+            style: Theme.of(context).textTheme.labelLarge,
             textAlign: TextAlign.center,
           ),
-
-          SizedBox(height: 60),
         ],
       ),
     );

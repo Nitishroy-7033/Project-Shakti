@@ -226,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen>
           CustomButton(
             text: AppStrings.loginButton,
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/bottom_nav');
+              Navigator.pushReplacementNamed(context, '/splash');
             },
           ),
         ],
