@@ -56,6 +56,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       //skip
                       GestureDetector(

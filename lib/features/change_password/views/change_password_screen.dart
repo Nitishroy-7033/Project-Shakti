@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_shakti/core/constants/app_icons.dart';
+import 'package:project_shakti/core/theme/app_colors.dart';
 import 'package:project_shakti/core/utils/ui_helper.dart';
 import 'package:project_shakti/core/widgets/custom_button.dart';
-import 'package:project_shakti/core/widgets/custom_text_field.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -22,6 +22,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(color: Theme.of(context).colorScheme.primary),
@@ -43,13 +44,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Current Password
               Text(
                 "Current Password",
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               UIHelper.getVerticalSpace(UIHelper.paddingSmall),
-              CustomTextField(
-                labelText: "Enter current password",
+              _buildPasswordField(
+                context: context,
+                brightness: brightness,
+                controller: _currentController,
+                obscure: _obscureCurrent,
+                onToggle:
+                    () => setState(() => _obscureCurrent = !_obscureCurrent),
+                hintText: "Enter your current password",
                 icon: AppIcons.lock,
                 iconColor: Theme.of(context).colorScheme.tertiary,
                 keyboardType: TextInputType.text,
@@ -66,66 +74,46 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
               ),
               SizedBox(height: 10),
+
+              /// New Password
               Text(
                 "New Password",
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               UIHelper.getVerticalSpace(UIHelper.paddingSmall),
-              CustomTextField(
-                labelText: "Enter new password",
+              _buildPasswordField(
+                context: context,
+                brightness: brightness,
+                controller: _newController,
+                obscure: _obscureNew,
+                onToggle: () => setState(() => _obscureNew = !_obscureNew),
+                hintText: "Enter your new password",
                 icon: AppIcons.lock,
                 iconColor: Theme.of(context).colorScheme.tertiary,
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.done,
               ),
               SizedBox(height: 20),
+
+              ///Confirm Password
               Text(
                 "Confirm Password",
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               UIHelper.getVerticalSpace(UIHelper.paddingSmall),
-              CustomTextField(
-                labelText: "Re-Enter password",
+              _buildPasswordField(
+                context: context,
+                brightness: brightness,
+                controller: _confirmController,
+                obscure: _obscureConfirm,
+                onToggle:
+                    () => setState(() => _obscureConfirm = !_obscureConfirm),
+                hintText: "Repeat your new password",
                 icon: AppIcons.lock,
                 iconColor: Theme.of(context).colorScheme.tertiary,
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.done,
               ),
-
-              /// Current Password
-              // _buildPasswordField(
-              //   label: "Current Password",
-              //   controller: _currentController,
-              //   obscure: _obscureCurrent,
-              //   onToggle:
-              //       () => setState(() => _obscureCurrent = !_obscureCurrent),
-              //   hintText: "Enter your current password",
-              // ),
-
-              // const SizedBox(height: 8),
-
-              // const SizedBox(height: 20),
-
-              // /// New Password
-              // _buildPasswordField(
-              //   label: "New Password",
-              //   controller: _newController,
-              //   obscure: _obscureNew,
-              //   onToggle: () => setState(() => _obscureNew = !_obscureNew),
-              //   hintText: "Confirm your password",
-              // ),
-
-              // const SizedBox(height: 20),
-
-              // ///Confirm Password
-              // _buildPasswordField(
-              //   label: "Confirm Password",
-              //   controller: _confirmController,
-              //   obscure: _obscureConfirm,
-              //   onToggle:
-              //       () => setState(() => _obscureConfirm = !_obscureConfirm),
-              //   hintText: "Repeat your new password",
-              // ),
               const SizedBox(height: 30),
               CustomButton(
                 onPressed: () {
@@ -144,45 +132,67 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 }
 
 Widget _buildPasswordField({
-  required String label,
+  required BuildContext context,
+  required Brightness brightness,
   required TextEditingController controller,
   required bool obscure,
   required VoidCallback onToggle,
   String? hintText,
+  String? Function(String?)? validator,
+  TextInputType? keyboardType,
+  IconData? icon,
+  Color? iconColor,
+  TextInputAction? textInputAction,
 }) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+  return TextFormField(
+    controller: controller,
+    obscureText: obscure,
+    keyboardType: keyboardType,
+    validator: validator,
+    textInputAction: textInputAction,
+    style: Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400),
+    decoration: InputDecoration(
+      labelStyle: Theme.of(context).textTheme.labelMedium,
+      floatingLabelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+        color: Theme.of(context).colorScheme.primary,
       ),
-      const SizedBox(height: 8),
-      TextField(
-        controller: controller,
-        obscureText: obscure,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.grey.shade100,
-          hintText: hintText,
-          prefixIcon: Icon(Icons.lock_outline, color: Colors.grey[700]),
-          suffixIcon: IconButton(
-            icon: Icon(
-              obscure ? Icons.visibility_off : Icons.visibility,
-              color: Colors.grey[700],
-            ),
-            onPressed: onToggle,
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide.none,
-          ),
+      filled: true,
+      fillColor: Theme.of(context).colorScheme.primaryContainer,
+      hintText: hintText,
+      hintStyle: Theme.of(context).textTheme.labelMedium,
+      prefixIcon: Icon(
+        icon,
+        color: iconColor ?? Theme.of(context).colorScheme.primary,
+        size: 20,
+      ),
+      suffixIcon: IconButton(
+        icon: Icon(
+          obscure ? Icons.visibility_off : Icons.visibility,
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+        onPressed: onToggle,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(
+          color:
+              brightness == Brightness.dark
+                  ? AppColors.whiteCommon.withValues(alpha: 0.2)
+                  : AppColors.blackCommon.withValues(alpha: 0.1),
         ),
       ),
-    ],
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+      ),
+      constraints: BoxConstraints(maxHeight: 50),
+      contentPadding: EdgeInsets.all(0),
+    ),
   );
 }

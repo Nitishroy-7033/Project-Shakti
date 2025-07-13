@@ -64,6 +64,7 @@ class CustomTextField extends StatelessWidget {
           borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
         ),
         constraints: BoxConstraints(maxHeight: 50),
+        contentPadding: EdgeInsets.all(0),
       ),
     );
   }
