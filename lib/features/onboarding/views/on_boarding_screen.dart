@@ -38,6 +38,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           ),
           //dot indicators
           Container(
+<<<<<<< HEAD
             alignment: Alignment(0, 0.75),
             child: SizedBox(
               height: 40,
@@ -93,23 +94,83 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             duration: Duration(milliseconds: 500),
                             curve: Curves.easeIn,
                           );
+=======
+            alignment: Alignment(0, 0.8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SmoothPageIndicator(
+                  controller: _controller,
+                  count: 3,
+                  effect: ExpandingDotsEffect(
+                    activeDotColor: Theme.of(context).colorScheme.primary,
+                    dotColor: Theme.of(context).colorScheme.tertiary,
+                    dotHeight: 10,
+                    dotWidth: 10,
+                  ),
+                ),
+                SizedBox(height: 50),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //skip
+                      GestureDetector(
+                        onTap: () {
+                          _controller.animateToPage(
+                            2,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeIn,
+                          );
+                        },
+                        child: Text(
+                          'Skip',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                      //next or done
+                      GestureDetector(
+                        onTap: () {
+                          if (onLastPage) {
+                            Navigator.pushReplacementNamed(context, '/login');
+                          } else {
+                            _controller.nextPage(
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeIn,
+                            );
+                          }
+>>>>>>> cc33c22cc57dbcf08b2e8bed30bccc8c912bd0fa
                         },
                         child: Container(
-                          width: 50,
-                          height: 50,
+                          width: 40,
+                          height: 40,
                           decoration: BoxDecoration(
-                            color: Color(0xFF4B30CC),
+                            color: Theme.of(context).colorScheme.primary,
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            Icons.arrow_forward,
-                            color: Colors.white,
+                            onLastPage
+                                ? Icons.check
+                                : Icons.arrow_forward_rounded,
+                            color: Theme.of(context).colorScheme.onPrimary,
                             size: 24,
                           ),
                         ),
                       ),
+<<<<<<< HEAD
                 ],
               ),
+=======
+                    ],
+                  ),
+                ),
+              ],
+>>>>>>> cc33c22cc57dbcf08b2e8bed30bccc8c912bd0fa
             ),
           ),
         ],
@@ -117,6 +178,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     );
   }
 }
+<<<<<<< HEAD
 
 // Skip button
 // TextButton(
@@ -147,3 +209,5 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 // Navigator.pushReplacementNamed(context, '/main');
 // }
 // },
+=======
+>>>>>>> cc33c22cc57dbcf08b2e8bed30bccc8c912bd0fa
