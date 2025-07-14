@@ -12,6 +12,7 @@ import 'package:project_shakti/features/edit_profile/views/edit_profile_screen.d
 import 'package:project_shakti/features/fake_call/views/fake_call.dart';
 import 'package:project_shakti/features/friend_list/views/friend_list_page.dart';
 import 'package:project_shakti/features/splash/views/splash_screen.dart';
+import 'package:project_shakti/features/start_trip/views/start_trip_screen.dart';
 
 class AppRoutes {
   static const String splash = '/splash';
@@ -27,6 +28,7 @@ class AppRoutes {
   static const String fakeCall = '/fake_call';
   static const String bottomNav = '/bottom_nav';
   static const String onBoarding = '/onBoarding';
+  static const String startTrip = '/startTrip';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -40,9 +42,10 @@ class AppRoutes {
       changePassword: (context) => const ChangePasswordScreen(),
       editProfile: (context) => const EditProfileScreen(),
       fakeCall: (context) => const FakeCall(),
-      home: (context)=> const HomeScreen(),
-      bottomNav: (context) =>const CustomBottomNav(),
-      onBoarding: (context)=>const  OnBoardingScreen(),
+      home: (context) => const HomeScreen(),
+      bottomNav: (context) => const CustomBottomNav(),
+      onBoarding: (context) => const OnBoardingScreen(),
+      startTrip: (context) => const TripMapScreen(),
     };
   }
 }
