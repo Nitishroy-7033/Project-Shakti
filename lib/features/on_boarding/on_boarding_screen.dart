@@ -13,9 +13,9 @@ class OnBoardingScreen extends StatefulWidget {
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
   //controller to keep track of which page we're on
-  final PageController _controller=PageController();
+  final PageController _controller = PageController();
   //keep track of if we are in the last page or not
-  bool onLastPage=false;
+  bool onLastPage = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,38 +24,49 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           //page view
           PageView(
             controller: _controller,
-            onPageChanged: (index)
-            {
+            onPageChanged: (index) {
               setState(() {
-                onLastPage=(index==2);
+                onLastPage = (index == 2);
               });
             },
             children: [
               EmergencyAlertPage(),
               ShareLocationPage(),
-              LocationReviewPage()
+              LocationReviewPage(),
             ],
           ),
           //dot indicators
           Container(
             alignment: Alignment(0, 0.75),
-              child: SizedBox(height: 40,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    //skip
-                    GestureDetector(
-                      onTap:(){
-                        _controller.jumpToPage(2);
-                      },
-                        child: Text('Skip',style: TextStyle(color: Color(0xFF4B30CC), fontSize: 16,fontWeight: FontWeight.w500,),)),
-                    SmoothPageIndicator(controller: _controller, count: 3),
-                    //next or done
-                    onLastPage
+            child: SizedBox(
+              height: 40,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  //skip
+                  GestureDetector(
+                    onTap: () {
+                      _controller.jumpToPage(2);
+                    },
+                    child: Text(
+                      'Skip',
+                      style: TextStyle(
+                        color: Color(0xFF4B30CC),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  SmoothPageIndicator(controller: _controller, count: 3),
+                  //next or done
+                  onLastPage
                       ? GestureDetector(
-                      onTap: (){
-                        _controller.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeIn);
-                      },
+                        onTap: () {
+                          _controller.nextPage(
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.easeIn,
+                          );
+                        },
                         child: Container(
                           width: 50,
                           height: 50,
@@ -68,10 +79,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             color: Colors.white,
                             size: 24,
                           ),
-                        ))
-                        :GestureDetector(
-                        onTap: (){
-                          _controller.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+                        ),
+                      )
+                      : GestureDetector(
+                        onTap: () {
+                          _controller.nextPage(
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.easeIn,
+                          );
                         },
                         child: Container(
                           width: 50,
@@ -85,42 +100,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             color: Colors.white,
                             size: 24,
                           ),
-                        ),)
-                  ],
-                ),
-              ))
+                        ),
+                      ),
+                ],
+              ),
+            ),
+          ),
         ],
-      )
+      ),
     );
   }
 }
-
-// Skip button
-// TextButton(
-// onPressed: () {
-// // Navigate to main app or login
-// Navigator.pushReplacementNamed(context, '/main');
-// },
-// child: Text(
-// 'Skip',
-// style: TextStyle(
-// color: Color(0xFFE91E63),
-// fontSize: 16,
-// fontWeight: FontWeight.w500,
-// ),
-// ),
-// ),
-//
-// // Next button
-// GestureDetector(
-// onTap: () {
-// if (_currentPage < _pages.length - 1) {
-// _pageController.nextPage(
-// duration: Duration(milliseconds: 300),
-// curve: Curves.easeInOut,
-// );
-// } else {
-// // Last page - navigate to main app
-// Navigator.pushReplacementNamed(context, '/main');
-// }
-// },
