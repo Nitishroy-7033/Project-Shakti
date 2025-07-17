@@ -5,6 +5,8 @@ class UIHelper {
   static const double paddingMedium = 16.0;
   static const double paddingLarge = 24.0;
 
+  UIHelper(pad);
+
   static EdgeInsets getPadding({
     double horizontal = paddingMedium,
     double vertical = paddingMedium,

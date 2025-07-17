@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/constants/app_icons.dart';
+import 'package:project_shakti/core/constants/app_strings.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
-import 'package:project_shakti/core/theme/app_text_styles.dart';
 import 'package:project_shakti/core/utils/ui_helper.dart';
 import 'package:project_shakti/core/widgets/custom_button.dart';
 import 'package:project_shakti/core/widgets/custom_text_field.dart';
@@ -59,58 +60,55 @@ class _SignUpScreenState extends State<SignUpScreen>
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    final size = MediaQuery.of(context).size;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            AppColor.accentBlue(brightness).withOpacity(0.1),
-            AppColor.background(brightness),
-            AppColor.accentPink(brightness).withOpacity(0.05),
-          ],
-          stops: const [0.0, 0.5, 1.0],
-        ),
-      ),
+    return SafeArea(
       child: Scaffold(
-        body: SafeArea(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.9),
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
+              ],
+              stops: const [0.0, 0.3, 1.0],
+            ),
+          ),
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: SlideTransition(
               position: _slideAnimation,
               child: Center(
                 child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
                   padding: EdgeInsets.symmetric(
-                    horizontal: size.width * 0.08,
-                    vertical: UIHelper.paddingMedium,
+                    horizontal: UIHelper.paddingLarge,
                   ),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 400),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Welcome Section
-                        _buildWelcomeSection(brightness),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      // Welcome Section
+                      _buildWelcomeSection(brightness),
 
-                        UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      UIHelper.getVerticalSpace(UIHelper.paddingLarge),
 
-                        // SignUp Form
-                        _buildSignUpForm(brightness),
+                      // SignUp Form
+                      _buildSignUpForm(brightness),
 
-                        UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      UIHelper.getVerticalSpace(UIHelper.paddingMedium),
 
-                        // Social SignUp Section
-                        _buildSocialSignUpSection(brightness),
+                      // Social SignUp Section
+                      _buildSocialSignUpSection(brightness),
 
-                        UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      UIHelper.getVerticalSpace(UIHelper.paddingMedium),
 
-                        // Login Link
-                        _buildLoginSection(brightness),
-                      ],
-                    ),
+                      // Login Link
+                      _buildLoginSection(brightness),
+
+                      UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                    ],
                   ),
                 ),
               ),
@@ -125,44 +123,42 @@ class _SignUpScreenState extends State<SignUpScreen>
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [
-                AppColor.accentBlue(brightness).withOpacity(0.2),
-                AppColor.accentPink(brightness).withOpacity(0.2),
-              ],
-            ),
+            color: AppColors.whiteCommon,
             boxShadow: [
               BoxShadow(
-                color: AppColor.accentBlue(brightness).withOpacity(0.1),
-                blurRadius: 20,
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
+                blurRadius: 10,
                 spreadRadius: 5,
               ),
             ],
           ),
           child: Icon(
-            Icons.person_add_rounded,
+            AppIcons.addPerson,
             size: 40,
-            color: AppColor.accentBlue(brightness),
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         UIHelper.getVerticalSpace(UIHelper.paddingMedium),
         Text(
-          'Create Account',
-          style: AppTextStyles.heading1(
-            brightness,
-          ).copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.5),
-          textAlign: TextAlign.center,
-        ),
-        UIHelper.getVerticalSpace(UIHelper.paddingSmall),
-        Text(
-          'Join Shakti and start your journey today',
-          style: AppTextStyles.subheading(brightness).copyWith(
-            color: AppTextStyles.subheading(brightness).color?.withOpacity(0.7),
+          AppStrings.createAccount,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
           ),
-          textAlign: TextAlign.center,
+        ),
+        Opacity(
+          opacity: 0.8,
+          child: Text(
+            AppStrings.joinToShakti,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
         ),
       ],
     );
@@ -170,22 +166,22 @@ class _SignUpScreenState extends State<SignUpScreen>
 
   Widget _buildSignUpForm(Brightness brightness) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(UIHelper.paddingLarge),
       decoration: BoxDecoration(
         color:
             brightness == Brightness.dark
-                ? Colors.white.withOpacity(0.05)
-                : Colors.white.withOpacity(0.7),
+                ? AppColors.whiteCommon.withValues(alpha: 0.05)
+                : AppColors.whiteCommon.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color:
               brightness == Brightness.dark
-                  ? Colors.white.withOpacity(0.1)
-                  : Colors.black.withOpacity(0.05),
+                  ? AppColors.whiteCommon.withValues(alpha: 0.1)
+                  : AppColors.blackCommon.withValues(alpha: 0.05),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.blackCommon.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -199,7 +195,8 @@ class _SignUpScreenState extends State<SignUpScreen>
                 child: CustomTextField(
                   labelText: 'First Name',
                   keyboardType: TextInputType.name,
-                  prefixIcon: Icons.person_outline,
+                  icon: Icons.person_outline_rounded,
+                  textInputAction: TextInputAction.next,
                 ),
               ),
               UIHelper.getHorizontalSpace(UIHelper.paddingSmall),
@@ -207,7 +204,8 @@ class _SignUpScreenState extends State<SignUpScreen>
                 child: CustomTextField(
                   labelText: 'Last Name',
                   keyboardType: TextInputType.name,
-                  prefixIcon: Icons.person_outline,
+                  icon: Icons.person_outline_rounded,
+                  textInputAction: TextInputAction.next,
                 ),
               ),
             ],
@@ -216,105 +214,99 @@ class _SignUpScreenState extends State<SignUpScreen>
           CustomTextField(
             labelText: 'Email Address',
             keyboardType: TextInputType.emailAddress,
-            prefixIcon: Icons.email_outlined,
+            icon: Icons.email_outlined,
+            textInputAction: TextInputAction.next,
           ),
           UIHelper.getVerticalSpace(UIHelper.paddingMedium),
           CustomTextField(
             labelText: 'Phone Number',
             keyboardType: TextInputType.phone,
-            prefixIcon: Icons.phone_outlined,
+            icon: Icons.call_outlined,
+            textInputAction: TextInputAction.next,
           ),
           UIHelper.getVerticalSpace(UIHelper.paddingMedium),
           CustomTextField(
             labelText: 'Password',
             obscureText: true,
-            prefixIcon: Icons.lock_outline,
+            icon: Icons.lock_outline,
+            textInputAction: TextInputAction.next,
           ),
           UIHelper.getVerticalSpace(UIHelper.paddingMedium),
           CustomTextField(
             labelText: 'Confirm Password',
             obscureText: true,
-            prefixIcon: Icons.lock_outline,
+            icon: Icons.lock_outline,
+            textInputAction: TextInputAction.done,
           ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+          UIHelper.getVerticalSpace(UIHelper.paddingSmall),
 
           // Terms and Conditions
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color:
-                  brightness == Brightness.dark
-                      ? Colors.white.withOpacity(0.02)
-                      : Colors.black.withOpacity(0.02),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Checkbox(
-                  value: _acceptTerms,
-                  onChanged: (value) {
-                    setState(() {
-                      _acceptTerms = value ?? false;
-                    });
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Checkbox(
+                value: _acceptTerms,
+                onChanged: (value) {
+                  setState(() {
+                    _acceptTerms = value ?? false;
+                  });
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: RichText(
-                      text: TextSpan(
-                        style: AppTextStyles.caption(brightness),
-                        children: [
-                          const TextSpan(text: 'I agree to the '),
-                          TextSpan(
-                            text: 'Terms of Service',
-                            style: TextStyle(
-                              color: AppColor.accentBlue(brightness),
-                              fontWeight: FontWeight.w600,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                          const TextSpan(text: ' and '),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: TextStyle(
-                              color: AppColor.accentBlue(brightness),
-                              fontWeight: FontWeight.w600,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ],
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: RichText(
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
+                      children: [
+                        const TextSpan(text: 'I agree to the '),
+                        TextSpan(
+                          text: 'Terms of Service',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelSmall?.copyWith(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            decorationColor:
+                                Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                        const TextSpan(text: ' and '),
+                        TextSpan(
+                          text: 'Privacy Policy',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelSmall?.copyWith(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.w700,
+                            decoration: TextDecoration.underline,
+                            decorationColor:
+                                Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          SizedBox(
-            width: double.infinity,
-            child: CustomButton(
-              text: 'Create Account',
-              onPressed:
-                  _acceptTerms
-                      ? () {
-                        Navigator.pushReplacementNamed(context, '/profile');
-                      }
-                      : null,
-              isEnabled: _acceptTerms,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
               ),
-            ),
+            ],
+          ),
+          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+          CustomButton(
+            text: 'Create Account',
+            onPressed:
+                _acceptTerms
+                    ? () {
+                      Navigator.pushReplacementNamed(context, '/login');
+                    }
+                    : null,
+            isEnabled: _acceptTerms,
           ),
         ],
       ),
@@ -328,23 +320,25 @@ class _SignUpScreenState extends State<SignUpScreen>
           children: [
             Expanded(
               child: Divider(
-                color: AppTextStyles.body(brightness).color?.withOpacity(0.3),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Or sign up with',
-                style: AppTextStyles.caption(brightness).copyWith(
-                  color: AppTextStyles.caption(
-                    brightness,
-                  ).color?.withOpacity(0.6),
+                'Or Sign Up with',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
             Expanded(
               child: Divider(
-                color: AppTextStyles.body(brightness).color?.withOpacity(0.3),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
           ],
@@ -357,8 +351,7 @@ class _SignUpScreenState extends State<SignUpScreen>
             Expanded(
               child: _buildSocialButton(
                 'Google',
-                Icons.g_mobiledata,
-                Colors.red,
+                AppIcons.googleIcon,
                 brightness,
                 () {},
               ),
@@ -367,8 +360,7 @@ class _SignUpScreenState extends State<SignUpScreen>
             Expanded(
               child: _buildSocialButton(
                 'Apple',
-                Icons.apple,
-                Colors.black,
+                AppIcons.appleIcon,
                 brightness,
                 () {},
               ),
@@ -376,9 +368,8 @@ class _SignUpScreenState extends State<SignUpScreen>
             UIHelper.getHorizontalSpace(UIHelper.paddingSmall),
             Expanded(
               child: _buildSocialButton(
-                'LinkedIn',
-                Icons.business_center,
-                Colors.blue.shade700,
+                'Microsoft',
+                AppIcons.microsoftIcon,
                 brightness,
                 () {},
               ),
@@ -391,40 +382,41 @@ class _SignUpScreenState extends State<SignUpScreen>
 
   Widget _buildSocialButton(
     String text,
-    IconData icon,
-    Color iconColor,
+    String icon,
     Brightness brightness,
     VoidCallback onPressed,
   ) {
-    return Container(
-      height: 48,
+    return SizedBox(
+      height: 50,
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
           side: BorderSide(
             color:
                 brightness == Brightness.dark
-                    ? Colors.white.withOpacity(0.2)
-                    : Colors.black.withOpacity(0.1),
+                    ? AppColors.whiteCommon.withValues(alpha: 0.1)
+                    : AppColors.blackCommon.withValues(alpha: 0.05),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           backgroundColor:
               brightness == Brightness.dark
-                  ? Colors.white.withOpacity(0.02)
-                  : Colors.white.withOpacity(0.5),
+                  ? AppColors.whiteCommon.withValues(alpha: 0.02)
+                  : AppColors.whiteCommon.withValues(alpha: 0.5),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: iconColor),
+            SizedBox(width: 20, height: 20, child: Image.asset(icon)),
             const SizedBox(height: 2),
             Text(
               text,
-              style: AppTextStyles.caption(
-                brightness,
-              ).copyWith(fontSize: 10, fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -436,21 +428,21 @@ class _SignUpScreenState extends State<SignUpScreen>
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color:
               brightness == Brightness.dark
-                  ? Colors.white.withOpacity(0.1)
-                  : Colors.black.withOpacity(0.05),
+                  ? AppColors.whiteCommon.withValues(alpha: 0.1)
+                  : AppColors.blackCommon.withValues(alpha: 0.05),
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Already have an account? ',
-            style: AppTextStyles.body(brightness).copyWith(
-              color: AppTextStyles.body(brightness).color?.withOpacity(0.8),
+            AppStrings.alreadyHaveAccount,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
           ),
           TextButton(
@@ -463,12 +455,12 @@ class _SignUpScreenState extends State<SignUpScreen>
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Text(
-              'Sign In',
-              style: AppTextStyles.button(brightness).copyWith(
-                color: AppColor.accentPink(brightness),
+              AppStrings.loginButton,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.secondary,
                 fontWeight: FontWeight.w700,
                 decoration: TextDecoration.underline,
-                decorationColor: AppColor.accentPink(brightness),
+                decorationColor: Theme.of(context).colorScheme.secondary,
               ),
             ),
           ),

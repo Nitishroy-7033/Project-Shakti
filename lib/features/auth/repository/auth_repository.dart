@@ -1,4 +1,3 @@
-import 'package:project_shakti/features/auth/models/user_model.dart';
 
 class AuthRepository {
 

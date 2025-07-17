@@ -62,49 +62,46 @@ class _ProfileScreenState extends State<ProfileScreen>
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppColor.accentPink(brightness).withOpacity(0.1),
-            AppColor.background(brightness),
-            AppColor.accentBlue(brightness).withOpacity(0.05),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(color: Theme.of(context).colorScheme.primary),
+        title: Text(
+          "Profile",
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
+        centerTitle: true,
       ),
-      child: Scaffold(
-        body: FadeTransition(
-          opacity: _fadeAnimation,
-          child: SlideTransition(
-            position: _slideAnimation,
-            child: SafeArea(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    // Header with Profile Info
-                    _buildProfileHeader(brightness),
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: SafeArea(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  // Header with Profile Info
+                  _buildProfileHeader(brightness),
 
-                    // Profile Stats
-                    _buildProfileStats(brightness),
+                  // Profile Stats
+                  _buildProfileStats(brightness),
 
-                    // Account Settings
-                    _buildAccountSettings(brightness),
+                  // Account Settings
+                  _buildAccountSettings(brightness),
 
-                    // App Settings
-                    _buildAppSettings(brightness),
+                  // App Settings
+                  _buildAppSettings(brightness),
 
-                    // Support & Info
-                    _buildSupportSection(brightness),
+                  // Support & Info
+                  _buildSupportSection(brightness),
 
-                    // Sign Out Button
-                    _buildSignOutSection(brightness),
+                  // Sign Out Button
+                  _buildSignOutSection(brightness),
 
-                    UIHelper.getVerticalSpace(UIHelper.paddingLarge),
-                  ],
-                ),
+                  UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                ],
               ),
             ),
           ),
@@ -126,19 +123,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                 height: 100,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColor.accentPink(brightness),
-                      AppColor.accentBlue(brightness),
-                    ],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColor.accentPink(brightness).withOpacity(0.3),
-                      blurRadius: 20,
-                      spreadRadius: 5,
-                    ),
-                  ],
+                  // gradient: LinearGradient(
+                  //   colors: [
+                  //     AppColor.accentPink(brightness),
+                  //     AppColor.accentBlue(brightness),
+                  //   ],
+                  // ),
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: AppColor.accentPink(brightness).withOpacity(0.3),
+                  //     blurRadius: 20,
+                  //     spreadRadius: 5,
+                  //   ),
+                  // ],
                 ),
                 // child: const Icon(Icons.person, size: 50, color: Colors.white),
                 child: CircleAvatar(
@@ -159,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColor.accentBlue(brightness),
+                      // color: AppColor.accentBlue(brightness),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
@@ -199,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 icon: Icon(
                   Icons.edit_outlined,
                   size: 20,
-                  color: AppColor.accentBlue(brightness),
+                  // color: AppColor.accentBlue(brightness),
                 ),
               ),
             ],
@@ -295,13 +292,13 @@ class _ProfileScreenState extends State<ProfileScreen>
   ) {
     return Column(
       children: [
-        Icon(icon, color: AppColor.accentPink(brightness), size: 28),
+        Icon(icon, color: AppColors.secondaryDark, size: 28),
         UIHelper.getVerticalSpace(UIHelper.paddingSmall),
         Text(
           value,
           style: AppTextStyles.heading3(brightness).copyWith(
             fontWeight: FontWeight.w700,
-            color: AppColor.accentBlue(brightness),
+            color: AppColors.secondaryLight,
           ),
         ),
         Text(
@@ -513,10 +510,10 @@ class _ProfileScreenState extends State<ProfileScreen>
           _showSignOutDialog(brightness);
         },
 
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 100),
-        ),
+        // style: ElevatedButton.styleFrom(
+        //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        //   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 100),
+        // ),
       ),
     );
   }
@@ -545,12 +542,12 @@ class _ProfileScreenState extends State<ProfileScreen>
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColor.accentBlue(brightness).withOpacity(0.1),
+            // color: AppColor.accentBlue(brightness).withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
             option['icon'],
-            color: AppColor.accentBlue(brightness),
+            // color: AppColor.accentBlue(brightness),
             size: 20,
           ),
         ),
@@ -606,10 +603,10 @@ class _ProfileScreenState extends State<ProfileScreen>
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColor.accentPink(brightness).withOpacity(0.1),
+            // color: AppColor.accentPink(brightness).withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: AppColor.accentPink(brightness), size: 20),
+          child: Icon(icon, color: AppColors.secondaryDark, size: 20),
         ),
         title: Text(
           title,
@@ -626,7 +623,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         trailing: Switch(
           value: value,
           onChanged: onChanged,
-          activeColor: AppColor.accentPink(brightness),
+          // activeColor: AppColor.accentPink(brightness),
         ),
       ),
     );
@@ -639,7 +636,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           (context) => AlertDialog(
             backgroundColor:
                 brightness == Brightness.dark
-                    ? AppColor.card(brightness)
+                    ? AppColors.primaryContainerDark
                     : Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -654,7 +651,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 onPressed: () => Navigator.pop(context),
                 child: Text(
                   'Cancel',
-                  style: TextStyle(color: AppColor.accentBlue(brightness)),
+                  // style: TextStyle(color: AppColor.accentBlue(brightness)),
                 ),
               ),
               TextButton(
