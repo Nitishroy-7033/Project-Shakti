@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:project_shakti/core/routes/routes.dart';
+import 'package:project_shakti/core/service/service_locator.dart';
 import 'package:project_shakti/core/theme/app_theme.dart';
-import 'package:project_shakti/features/start_trip/views/start_trip_screen.dart';
+import 'package:project_shakti/core/utils/update_status_bar.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setupServiceLocator();
+
   runApp(const MyApp());
 }
 
@@ -15,11 +19,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Shakti',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme(),
-      darkTheme: AppTheme.darkTheme(),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
-      home: const TripMapScreen(),
+      // themeMode: themeController.isLightTheme.value
+      //             ? ThemeMode.light
+      //             : ThemeMode.dark,
+      initialRoute: AppRoutes.splash, 
       routes: AppRoutes.getRoutes(),
+      builder: (context, child) {
+        updateStatusBar(context);
+        return child!;
+      },
     );
   }
 }
