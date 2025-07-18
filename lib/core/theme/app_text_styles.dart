@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project_shakti/core/theme/app_colors.dart';
 
 class AppTextStyles {
   // App Bar Title
@@ -7,7 +6,7 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w600,
     fontSize: 20,
-    color: AppColor.primaryText(brightness),
+    // color: AppColor.primaryText(brightness),
   );
 
   // Heading 1 (Large titles, e.g., page headers)
@@ -15,7 +14,7 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w700,
     fontSize: 24,
-    color: AppColor.primaryText(brightness),
+    // color: AppColor.primaryText(brightness),
   );
 
   // Heading 2 (Section headers)
@@ -23,14 +22,14 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w600,
     fontSize: 18,
-    color: AppColor.primaryText(brightness),
+    // color: AppColor.primaryText(brightness),
   );
   // Heading 3 (Subsection headers)
   static TextStyle heading3(Brightness brightness) => TextStyle(
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w500,
     fontSize: 16,
-    color: AppColor.primaryText(brightness),
+    // color: AppColor.primaryText(brightness),
   );
 
   // Subheading (Secondary titles)
@@ -38,7 +37,7 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w500,
     fontSize: 16,
-    color: AppColor.secondaryText(brightness),
+    // color: AppColor.secondaryText(brightness),
   );
 
   // Body Text (Regular)
@@ -46,7 +45,7 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w400,
     fontSize: 14,
-    color: AppColor.primaryText(brightness),
+    // color: AppColor.primaryText(brightness),
   );
 
   // Body Text Bold
@@ -54,7 +53,7 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w600,
     fontSize: 14,
-    color: AppColor.primaryText(brightness),
+    // color: AppColor.primaryText(brightness),
   );
 
   // Caption (Small text, e.g., for descriptions)
@@ -62,7 +61,7 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w300,
     fontSize: 12,
-    color: AppColor.secondaryText(brightness),
+    // color: AppColor.secondaryText(brightness),
   );
 
   // Button Text
@@ -70,7 +69,7 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w500,
     fontSize: 14,
-    color: AppColor.secondaryText(brightness), // Fixed for contrast on buttons
+    // color: AppColor.secondaryText(brightness), // Fixed for contrast on buttons
   );
 
   // Label (e.g., form field labels)
@@ -78,6 +77,6 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w500,
     fontSize: 14,
-    color: AppColor.primaryText(brightness),
+    // color: AppColor.primaryText(brightness),
   );
 }
