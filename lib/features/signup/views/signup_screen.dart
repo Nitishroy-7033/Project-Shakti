@@ -7,9 +7,9 @@ import 'package:project_shakti/core/utils/ui_helper.dart';
 import 'package:project_shakti/core/widgets/custom_button.dart';
 import 'package:project_shakti/core/widgets/custom_loading_indicator.dart';
 import 'package:project_shakti/core/widgets/custom_text_field.dart';
-import 'package:project_shakti/features/signup/presentation/bloc/signup_bloc.dart';
-import 'package:project_shakti/features/signup/presentation/bloc/signup_event.dart';
-import 'package:project_shakti/features/signup/presentation/bloc/signup_state.dart';
+import 'package:project_shakti/features/signup/bloc/signup_bloc.dart';
+import 'package:project_shakti/features/signup/bloc/signup_event.dart';
+import 'package:project_shakti/features/signup/bloc/signup_state.dart';
 
 class SignUpScreen extends StatefulWidget {
   final Function(ThemeMode)? onThemeChanged;
@@ -123,12 +123,17 @@ class _SignUpScreenState extends State<SignUpScreen>
                         listener: (context, state) {
                           if (state is SignUpSuccess) {
                             Navigator.pushReplacementNamed(context, '/login');
-                             UIHelper.showSnackBar(context, state.message,
-                              isError: false);
+                            UIHelper.showSnackBar(
+                              context,
+                              state.message,
+                              isError: false,
+                            );
                           } else if (state is SignUpFailure) {
-                            UIHelper.showSnackBar(context, state.message,
-                              isError: true);
-                           
+                            UIHelper.showSnackBar(
+                              context,
+                              state.message,
+                              isError: true,
+                            );
                           }
                         },
                         builder: (context, state) {
@@ -407,7 +412,6 @@ class _SignUpScreenState extends State<SignUpScreen>
             ),
             UIHelper.getVerticalSpace(UIHelper.paddingMedium),
 
-        
             CustomButton(
               text: 'Create Account',
               onPressed:

@@ -26,3 +26,4 @@ class AppColors {
   static const Color whiteCommon = Color(0xffFFFFFF);
   static const Color blackCommon = Color(0xff000000);
 }
+

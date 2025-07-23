@@ -1,31 +1,7 @@
-// // data/datasource/api_client.dart
-// import 'package:dio/dio.dart';
 
-// class ApiClient {
-//   final Dio _dio;
-
-//   ApiClient(String? token)
-//       : _dio = Dio(BaseOptions(
-//           baseUrl: 'https://project-shakti-server.onrender.com/', // Replace with your base URL
-//           headers: {
-//             'Authorization': token != null ? 'Bearer $token' : '',
-//             'Content-Type': 'application/json',
-//           },
-//         ));
-
-//   Future<Response> post(String path, dynamic data) async {
-//     return await _dio.post(path, data: data);
-//   }
-
-//   // Add more methods if needed (get, put, delete)
-// }
-
-
-
-// lib/data/datasource/api_client.dart
 import 'package:dio/dio.dart';
 import 'package:project_shakti/core/utils/sharedpref_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project_shakti/core/network/api_response.dart';
 
 class ApiClient {
   static final ApiClient _instance = ApiClient._internal();
@@ -37,12 +13,11 @@ class ApiClient {
     },
   ));
 
-  factory ApiClient() {
-    return _instance;
-  }
+  factory ApiClient() => _instance;
 
   ApiClient._internal();
-              final SharedPrefsHelper _prefsHelper = SharedPrefsHelper();
+
+  final SharedPrefsHelper _prefsHelper = SharedPrefsHelper();
 
   Future<void> _setTokenHeader({bool useToken = true}) async {
     if (useToken) {
@@ -55,23 +30,120 @@ class ApiClient {
     }
   }
 
-  Future<Response> get(String path, {bool useToken = true}) async {
+  // GET request
+  Future<ApiResponse<T>> get<T>(
+    String path, {
+    bool useToken = true,
+    T Function(dynamic json)? fromJson,
+    Map<String, dynamic>? queryParameters,
+  }) async {
     await _setTokenHeader(useToken: useToken);
-    return await _dio.get(path);
+
+    try {
+      final response = await _dio.get(path, queryParameters: queryParameters);
+      return _handleResponse<T>(response, fromJson);
+    } catch (e) {
+      return _handleError<T>(e);
+    }
   }
 
-  Future<Response> post(String path, dynamic data, {bool useToken = true}) async {
+  // POST request
+  Future<ApiResponse<T>> post<T>(
+    String path,
+    dynamic data, {
+    bool useToken = true,
+    T Function(dynamic json)? fromJson,
+  }) async {
     await _setTokenHeader(useToken: useToken);
-    return await _dio.post(path, data: data);
+
+    try {
+      final response = await _dio.post(path, data: data);
+      return _handleResponse<T>(response, fromJson);
+    } catch (e) {
+      return _handleError<T>(e);
+    }
   }
 
-  Future<Response> put(String path, dynamic data, {bool useToken = true}) async {
+  // PUT request
+  Future<ApiResponse<T>> put<T>(
+    String path,
+    dynamic data, {
+    bool useToken = true,
+    T Function(dynamic json)? fromJson,
+  }) async {
     await _setTokenHeader(useToken: useToken);
-    return await _dio.put(path, data: data);
+
+    try {
+      final response = await _dio.put(path, data: data);
+      return _handleResponse<T>(response, fromJson);
+    } catch (e) {
+      return _handleError<T>(e);
+    }
   }
 
-  Future<Response> delete(String path, {bool useToken = true}) async {
+  // PATCH request
+  Future<ApiResponse<T>> patch<T>(
+    String path,
+    dynamic data, {
+    bool useToken = true,
+    T Function(dynamic json)? fromJson,
+  }) async {
     await _setTokenHeader(useToken: useToken);
-    return await _dio.delete(path);
+
+    try {
+      final response = await _dio.patch(path, data: data);
+      return _handleResponse<T>(response, fromJson);
+    } catch (e) {
+      return _handleError<T>(e);
+    }
+  }
+
+  // DELETE request
+  Future<ApiResponse<T>> delete<T>(
+    String path, {
+    bool useToken = true,
+    T Function(dynamic json)? fromJson,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    await _setTokenHeader(useToken: useToken);
+
+    try {
+      final response = await _dio.delete(path, queryParameters: queryParameters);
+      return _handleResponse<T>(response, fromJson);
+    } catch (e) {
+      return _handleError<T>(e);
+    }
+  }
+
+  // ✅ Shared success handler
+  ApiResponse<T> _handleResponse<T>(
+    Response response,
+    T Function(dynamic json)? fromJson,
+  ) {
+    final json = response.data;
+    return ApiResponse<T>(
+      success: json['success'] ?? false,
+      message: json['message'],
+      data: fromJson != null && json['data'] != null ? fromJson(json['data']) : null,
+    );
+  }
+
+  // ❌ Shared error handler
+  ApiResponse<T> _handleError<T>(Object error) {
+    if (error is DioException) {
+      final response = error.response;
+      final errorMsg = response?.data?['message'] ?? error.message ?? 'An unexpected error occurred.';
+      return ApiResponse<T>(
+        success: false,
+        message: errorMsg,
+        data: null,
+      );
+    }
+
+    return ApiResponse<T>(
+      success: false,
+      message: 'Unexpected error: $error',
+      data: null,
+    );
   }
 }

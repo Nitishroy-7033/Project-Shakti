@@ -8,10 +8,9 @@ import 'package:project_shakti/core/utils/ui_helper.dart';
 import 'package:project_shakti/core/widgets/custom_button.dart';
 import 'package:project_shakti/core/widgets/custom_loading_indicator.dart';
 import 'package:project_shakti/core/widgets/custom_text_field.dart';
-import 'package:project_shakti/features/login/presentation/bloc/login_bloc.dart';
-import 'package:project_shakti/features/login/presentation/bloc/login_event.dart';
-import 'package:project_shakti/features/login/presentation/bloc/login_state.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project_shakti/features/login/bloc/login_bloc.dart';
+import 'package:project_shakti/features/login/bloc/login_event.dart';
+import 'package:project_shakti/features/login/bloc/login_state.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function(ThemeMode)? onThemeChanged;

@@ -41,4 +41,3 @@ class LoginSubmittedEvent extends LoginEvent {
 }
 
 
-
