@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/constants/app_icons.dart';
+import 'package:project_shakti/core/constants/app_strings.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
-import 'package:project_shakti/core/theme/app_text_styles.dart';
+import 'package:project_shakti/core/utils/sharedpref_helper.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,6 +13,8 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
+  final SharedPrefsHelper _prefsHelper = SharedPrefsHelper();
+
   late AnimationController _bouncingController;
   late AnimationController _scaleController;
   late AnimationController _rotationController;
@@ -84,10 +88,19 @@ class _SplashScreenState extends State<SplashScreen>
     // Start animations
     _startAnimations();
 
-    // Navigate after delay
-    Future.delayed(const Duration(seconds: 4), () {
-      if (mounted) {
+   
+
+    Future.delayed(const Duration(seconds: 4), () async {
+      bool isOnboarded = await _prefsHelper.isOnboarded();
+      String? token = await _prefsHelper.getToken();
+
+      print('isOnboarded: $isOnboarded, token: $token');
+      if (!isOnboarded) {
+        Navigator.pushReplacementNamed(context, '/onBoarding');
+      } else if (token == null || token.isEmpty) {
         Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        Navigator.pushReplacementNamed(context, '/bottom_nav');
       }
     });
   }
@@ -117,9 +130,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -127,10 +137,10 @@ class _SplashScreenState extends State<SplashScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColor.accentPink(brightness).withOpacity(0.9),
-              AppColor.accentPink(brightness).withOpacity(0.6),
-              AppColor.background(brightness).withOpacity(0.4),
-              AppColor.accentBlue(brightness).withOpacity(0.1),
+              Theme.of(context).colorScheme.primary.withValues(alpha: 0.9),
+              Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
+              Theme.of(context).colorScheme.surface.withValues(alpha: 0.4),
+              Theme.of(context).colorScheme.surface.withValues(alpha: 0.2),
             ],
             stops: const [0.0, 0.3, 0.7, 1.0],
           ),
@@ -140,6 +150,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 20),
                 // Animated Heart Icon
                 AnimatedBuilder(
                   animation: Listenable.merge([
@@ -157,27 +168,29 @@ class _SplashScreenState extends State<SplashScreen>
                           child: Container(
                             padding: const EdgeInsets.all(30),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.9),
+                              color: AppColors.whiteCommon,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColor.accentPink(
-                                    brightness,
-                                  ).withOpacity(0.4),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.4),
                                   blurRadius: 20,
                                   spreadRadius: 5,
                                 ),
                                 BoxShadow(
-                                  color: Colors.white.withOpacity(0.3),
+                                  color: AppColors.whiteCommon.withValues(
+                                    alpha: 0.3,
+                                  ),
                                   blurRadius: 10,
                                   spreadRadius: 2,
                                 ),
                               ],
                             ),
                             child: Icon(
-                              Icons.favorite,
+                              AppIcons.heart,
                               size: 80,
-                              color: AppColor.accentPink(brightness),
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
@@ -194,17 +207,18 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Column(
                     children: [
                       Text(
-                        'SHAKTI',
-                        style: AppTextStyles.heading1(brightness).copyWith(
-                          fontWeight: FontWeight.w900,
+                        AppStrings.appName,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineLarge?.copyWith(
                           fontSize: 42,
+                          fontWeight: FontWeight.w900,
                           letterSpacing: 3,
-
                           shadows: [
                             Shadow(
-                              color: AppColor.accentPink(
-                                brightness,
-                              ).withOpacity(0.5),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.5),
                               blurRadius: 10,
                               offset: const Offset(2, 2),
                             ),
@@ -214,13 +228,10 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'Women Safety App',
-                        style: AppTextStyles.subheading(brightness).copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-
-                          letterSpacing: 1,
-                        ),
+                        AppStrings.womenSafetyLine,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineMedium?.copyWith(letterSpacing: 1),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -241,30 +252,32 @@ class _SplashScreenState extends State<SplashScreen>
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.3),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onPrimary.withValues(alpha: 0.3),
                         width: 1.5,
                       ),
                     ),
                     child: Column(
                       children: [
                         Text(
-                          '💪 सशक्त महिला, सुरक्षित समाज',
-                          style: AppTextStyles.body(brightness).copyWith(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-
+                          AppStrings.sashaktMahilaTitle,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
                             height: 1.4,
                           ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Empowered Women, Safer Society',
-                          style: AppTextStyles.caption(brightness).copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-
+                          AppStrings.empoweredWomenTitle,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelLarge?.copyWith(
                             fontStyle: FontStyle.italic,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -273,7 +286,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
 
-                const SizedBox(height: 40),
+                const SizedBox(height: 50),
 
                 // Loading indicator
                 FadeTransition(
@@ -284,18 +297,21 @@ class _SplashScreenState extends State<SplashScreen>
                         width: 40,
                         height: 40,
                         child: CircularProgressIndicator(
-                          strokeWidth: 3,
+                          strokeWidth: 4,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColor.accentPink(brightness).withOpacity(0.8),
+                            Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.8),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 20),
                       Text(
                         'Loading...',
-                        style: AppTextStyles.caption(
-                          brightness,
-                        ).copyWith(fontWeight: FontWeight.w500),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),

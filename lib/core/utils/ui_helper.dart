@@ -5,6 +5,8 @@ class UIHelper {
   static const double paddingMedium = 16.0;
   static const double paddingLarge = 24.0;
 
+  UIHelper(pad);
+
   static EdgeInsets getPadding({
     double horizontal = paddingMedium,
     double vertical = paddingMedium,
@@ -27,4 +29,24 @@ class UIHelper {
   static double getScreenHeight(BuildContext context) {
     return MediaQuery.of(context).size.height;
   }
+
+
+static void showSnackBar(
+  BuildContext context,
+  String message, {
+  bool isError = false,
+  Duration duration = const Duration(seconds: 2),
+}) {
+  final backgroundColor = isError ? Colors.redAccent : Colors.green;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: backgroundColor,
+      duration: duration,
+    ),
+  );
+}
+
+
 }
