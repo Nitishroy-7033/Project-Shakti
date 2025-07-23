@@ -7,6 +7,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_shakti/core/theme/app_text_styles.dart';
+import 'package:project_shakti/core/widgets/custom_button.dart';
 
 import '../../../core/theme/app_colors.dart';
 
@@ -500,47 +501,26 @@ class _TripMapScreenState extends State<TripMapScreen> {
 
   Widget _buildActionButtons() {
     final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    _isTripActive ? AppColors.fontDark : AppColors.successColor,
-                foregroundColor: AppColors.fontDark,
-              ),
-              onPressed:
-                  _isLoading
-                      ? null
-                      : _isTripActive
-                      ? _stopTrip
-                      : _startTrip,
-              child: Text(
+      child: Center(
+        child: SizedBox(
+          width: 110,
+          child: CustomButton(
+            text:
                 _isLoading
                     ? "Loading..."
                     : _isTripActive
                     ? "Stop Trip"
                     : "Start Trip",
-                style: AppTextStyles.label(brightness),
-              ),
-            ),
+            isLoading: _isLoading,
+            isEnabled: !_isLoading,
+            onPressed: _isTripActive ? _stopTrip : _startTrip,
+            backgroundColor:
+                _isTripActive ? AppColors.fontDark : AppColors.successColor,
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.errorColor,
-                foregroundColor: AppColors.fontDark,
-              ),
-              onPressed: () {
-                _showErrorSnackBar("SOS feature not implemented yet");
-              },
-              child: Text("SOS", style: AppTextStyles.label(brightness)),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
