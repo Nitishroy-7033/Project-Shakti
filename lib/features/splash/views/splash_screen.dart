@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_shakti/core/constants/app_icons.dart';
 import 'package:project_shakti/core/constants/app_strings.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
+import 'package:project_shakti/core/utils/sharedpref_helper.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,6 +13,8 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
+  final SharedPrefsHelper _prefsHelper = SharedPrefsHelper();
+
   late AnimationController _bouncingController;
   late AnimationController _scaleController;
   late AnimationController _rotationController;
@@ -85,10 +88,19 @@ class _SplashScreenState extends State<SplashScreen>
     // Start animations
     _startAnimations();
 
-    // Navigate after delay
-    Future.delayed(const Duration(seconds: 4), () {
-      if (mounted) {
+   
+
+    Future.delayed(const Duration(seconds: 4), () async {
+      bool isOnboarded = await _prefsHelper.isOnboarded();
+      String? token = await _prefsHelper.getToken();
+
+      print('isOnboarded: $isOnboarded, token: $token');
+      if (!isOnboarded) {
         Navigator.pushReplacementNamed(context, '/onBoarding');
+      } else if (token == null || token.isEmpty) {
+        Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        Navigator.pushReplacementNamed(context, '/bottom_nav');
       }
     });
   }

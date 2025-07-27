@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/routes/routes.dart';
+import 'package:project_shakti/core/utils/sharedpref_helper.dart';
 import 'package:project_shakti/features/onboarding/widgets/emergency_alert_page.dart';
 import 'package:project_shakti/features/onboarding/widgets/location_review_page.dart';
 import 'package:project_shakti/features/onboarding/widgets/share_location_page.dart';
@@ -12,6 +14,8 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
+final SharedPrefsHelper _prefsHelper = SharedPrefsHelper();
+
   //controller to keep track of which page we're on
   final PageController _controller = PageController();
   //keep track of if we are in the last page or not
@@ -77,8 +81,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       ),
                       //next or done
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async{
                           if (onLastPage) {
+                             await _prefsHelper.setOnboarded(true); // ← this line
                             Navigator.pushReplacementNamed(context, '/login');
                           } else {
                             _controller.nextPage(

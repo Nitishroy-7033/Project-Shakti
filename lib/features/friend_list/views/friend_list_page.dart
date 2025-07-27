@@ -85,13 +85,13 @@ class FriendListPage extends StatelessWidget {
               UIHelper.getVerticalSpace(UIHelper.paddingMedium),
               Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(12),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
                 clipBehavior: Clip.hardEdge,
                 child: ListTile(
                   leading: ClipRRect(
-                    borderRadius: BorderRadiusGeometry.circular(20),
+                    borderRadius: BorderRadius.circular(20),
                     child: Image.network(
                       width: 40,
                       "https://storage.pixteller.com/designs/designs-images/2019-01-10/07/profile-phote-avatar-human-girl-yellow-fashion-1-5c3784f592e84.png",
@@ -117,13 +117,13 @@ class FriendListPage extends StatelessWidget {
               ),
               Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(12),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
                 clipBehavior: Clip.hardEdge,
                 child: ListTile(
                   leading: ClipRRect(
-                    borderRadius: BorderRadiusGeometry.circular(20),
+                    borderRadius: BorderRadius.circular(10),
                     child: Image.network(
                       width: 40,
                       "https://storage.pixteller.com/designs/designs-images/2019-01-10/07/profile-phote-avatar-human-girl-yellow-fashion-1-5c3784f592e84.png",
@@ -149,13 +149,13 @@ class FriendListPage extends StatelessWidget {
               ),
               Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(12),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
                 clipBehavior: Clip.hardEdge,
                 child: ListTile(
                   leading: ClipRRect(
-                    borderRadius: BorderRadiusGeometry.circular(20),
+                    borderRadius: BorderRadius.circular(20),
                     child: Image.network(
                       width: 40,
                       "https://storage.pixteller.com/designs/designs-images/2019-01-10/07/profile-phote-avatar-human-girl-yellow-fashion-1-5c3784f592e84.png",
@@ -181,13 +181,13 @@ class FriendListPage extends StatelessWidget {
               ),
               Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(12),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
                 clipBehavior: Clip.hardEdge,
                 child: ListTile(
                   leading: ClipRRect(
-                    borderRadius: BorderRadiusGeometry.circular(20),
+                    borderRadius: BorderRadius.circular(20),
                     child: Image.network(
                       width: 40,
                       "https://storage.pixteller.com/designs/designs-images/2019-01-10/07/profile-phote-avatar-human-girl-yellow-fashion-1-5c3784f592e84.png",
@@ -213,13 +213,13 @@ class FriendListPage extends StatelessWidget {
               ),
               Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(12),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
                 clipBehavior: Clip.hardEdge,
                 child: ListTile(
                   leading: ClipRRect(
-                    borderRadius: BorderRadiusGeometry.circular(20),
+                    borderRadius: BorderRadius.circular(20),
                     child: Image.network(
                       width: 40,
                       "https://storage.pixteller.com/designs/designs-images/2019-01-10/07/profile-phote-avatar-human-girl-yellow-fashion-1-5c3784f592e84.png",
@@ -245,13 +245,13 @@ class FriendListPage extends StatelessWidget {
               ),
               Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(12),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
                 clipBehavior: Clip.hardEdge,
                 child: ListTile(
                   leading: ClipRRect(
-                    borderRadius: BorderRadiusGeometry.circular(20),
+                    borderRadius: BorderRadius.circular(20),
                     child: Image.network(
                       width: 40,
                       "https://storage.pixteller.com/designs/designs-images/2019-01-10/07/profile-phote-avatar-human-girl-yellow-fashion-1-5c3784f592e84.png",
