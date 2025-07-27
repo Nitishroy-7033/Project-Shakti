@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_shakti/core/constants/app_icons.dart';
+import 'package:project_shakti/core/constants/app_strings.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
-import 'package:project_shakti/core/theme/app_text_styles.dart';
 import 'package:project_shakti/core/utils/ui_helper.dart';
 import 'package:project_shakti/core/widgets/custom_button.dart';
+import 'package:project_shakti/core/widgets/custom_loading_indicator.dart';
 import 'package:project_shakti/core/widgets/custom_text_field.dart';
+import 'package:project_shakti/features/signup/bloc/signup_bloc.dart';
+import 'package:project_shakti/features/signup/bloc/signup_event.dart';
+import 'package:project_shakti/features/signup/bloc/signup_state.dart';
 
 class SignUpScreen extends StatefulWidget {
   final Function(ThemeMode)? onThemeChanged;
@@ -16,6 +22,16 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen>
     with TickerProviderStateMixin {
+  final _formKey = GlobalKey<FormState>();
+
+  // Add these controllers
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
@@ -51,6 +67,14 @@ class _SignUpScreenState extends State<SignUpScreen>
 
   @override
   void dispose() {
+    // Dispose controllers
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+
     _fadeController.dispose();
     _slideController.dispose();
     super.dispose();
@@ -59,58 +83,82 @@ class _SignUpScreenState extends State<SignUpScreen>
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    final size = MediaQuery.of(context).size;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            AppColor.accentBlue(brightness).withOpacity(0.1),
-            AppColor.background(brightness),
-            AppColor.accentPink(brightness).withOpacity(0.05),
-          ],
-          stops: const [0.0, 0.5, 1.0],
-        ),
-      ),
+    return SafeArea(
       child: Scaffold(
-        body: SafeArea(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.9),
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
+              ],
+              stops: const [0.0, 0.3, 1.0],
+            ),
+          ),
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: SlideTransition(
               position: _slideAnimation,
               child: Center(
                 child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
                   padding: EdgeInsets.symmetric(
-                    horizontal: size.width * 0.08,
-                    vertical: UIHelper.paddingMedium,
+                    horizontal: UIHelper.paddingLarge,
                   ),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 400),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Welcome Section
-                        _buildWelcomeSection(brightness),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      // Welcome Section
+                      _buildWelcomeSection(brightness),
 
-                        UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      UIHelper.getVerticalSpace(UIHelper.paddingLarge),
 
-                        // SignUp Form
-                        _buildSignUpForm(brightness),
+                      // SignUp Form
+                      // _buildSignUpForm(brightness),
+                      BlocConsumer<SignUpBloc, SignUpState>(
+                        listener: (context, state) {
+                          if (state is SignUpSuccess) {
+                            Navigator.pushReplacementNamed(context, '/login');
+                            UIHelper.showSnackBar(
+                              context,
+                              state.message,
+                              isError: false,
+                            );
+                          } else if (state is SignUpFailure) {
+                            UIHelper.showSnackBar(
+                              context,
+                              state.message,
+                              isError: true,
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          return Stack(
+                            children: [
+                              _buildSignUpForm(brightness),
+                              if (state is SignUpLoading)
+                                const Center(child: CustomLoadingIndicator()),
+                            ],
+                          );
+                        },
+                      ),
 
-                        UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      UIHelper.getVerticalSpace(UIHelper.paddingMedium),
 
-                        // Social SignUp Section
-                        _buildSocialSignUpSection(brightness),
+                      // Social SignUp Section
+                      _buildSocialSignUpSection(brightness),
 
-                        UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                      UIHelper.getVerticalSpace(UIHelper.paddingMedium),
 
-                        // Login Link
-                        _buildLoginSection(brightness),
-                      ],
-                    ),
+                      // Login Link
+                      _buildLoginSection(brightness),
+
+                      UIHelper.getVerticalSpace(UIHelper.paddingLarge),
+                    ],
                   ),
                 ),
               ),
@@ -125,130 +173,188 @@ class _SignUpScreenState extends State<SignUpScreen>
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [
-                AppColor.accentBlue(brightness).withOpacity(0.2),
-                AppColor.accentPink(brightness).withOpacity(0.2),
-              ],
-            ),
+            color: AppColors.whiteCommon,
             boxShadow: [
               BoxShadow(
-                color: AppColor.accentBlue(brightness).withOpacity(0.1),
-                blurRadius: 20,
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
+                blurRadius: 10,
                 spreadRadius: 5,
               ),
             ],
           ),
           child: Icon(
-            Icons.person_add_rounded,
+            AppIcons.addPerson,
             size: 40,
-            color: AppColor.accentBlue(brightness),
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         UIHelper.getVerticalSpace(UIHelper.paddingMedium),
         Text(
-          'Create Account',
-          style: AppTextStyles.heading1(
-            brightness,
-          ).copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.5),
-          textAlign: TextAlign.center,
-        ),
-        UIHelper.getVerticalSpace(UIHelper.paddingSmall),
-        Text(
-          'Join Shakti and start your journey today',
-          style: AppTextStyles.subheading(brightness).copyWith(
-            color: AppTextStyles.subheading(brightness).color?.withOpacity(0.7),
+          AppStrings.createAccount,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
           ),
-          textAlign: TextAlign.center,
+        ),
+        Opacity(
+          opacity: 0.8,
+          child: Text(
+            AppStrings.joinToShakti,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
         ),
       ],
     );
   }
 
   Widget _buildSignUpForm(Brightness brightness) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color:
-            brightness == Brightness.dark
-                ? Colors.white.withOpacity(0.05)
-                : Colors.white.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
+    return Form(
+      key: _formKey,
+      child: Container(
+        padding: const EdgeInsets.all(UIHelper.paddingLarge),
+        decoration: BoxDecoration(
           color:
               brightness == Brightness.dark
-                  ? Colors.white.withOpacity(0.1)
-                  : Colors.black.withOpacity(0.05),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+                  ? AppColors.whiteCommon.withValues(alpha: 0.05)
+                  : AppColors.whiteCommon.withValues(alpha: 0.7),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color:
+                brightness == Brightness.dark
+                    ? AppColors.whiteCommon.withValues(alpha: 0.1)
+                    : AppColors.blackCommon.withValues(alpha: 0.05),
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  labelText: 'First Name',
-                  keyboardType: TextInputType.name,
-                  prefixIcon: Icons.person_outline,
-                ),
-              ),
-              UIHelper.getHorizontalSpace(UIHelper.paddingSmall),
-              Expanded(
-                child: CustomTextField(
-                  labelText: 'Last Name',
-                  keyboardType: TextInputType.name,
-                  prefixIcon: Icons.person_outline,
-                ),
-              ),
-            ],
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          CustomTextField(
-            labelText: 'Email Address',
-            keyboardType: TextInputType.emailAddress,
-            prefixIcon: Icons.email_outlined,
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          CustomTextField(
-            labelText: 'Phone Number',
-            keyboardType: TextInputType.phone,
-            prefixIcon: Icons.phone_outlined,
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          CustomTextField(
-            labelText: 'Password',
-            obscureText: true,
-            prefixIcon: Icons.lock_outline,
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          CustomTextField(
-            labelText: 'Confirm Password',
-            obscureText: true,
-            prefixIcon: Icons.lock_outline,
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-
-          // Terms and Conditions
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color:
-                  brightness == Brightness.dark
-                      ? Colors.white.withOpacity(0.02)
-                      : Colors.black.withOpacity(0.02),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.blackCommon.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
-            child: Row(
+          ],
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                    validator: (firstName) {
+                      if (firstName == null || firstName.isEmpty) {
+                        return 'First name is required';
+                      } else if (firstName.length < 2) {
+                        return 'First name must be at least 2 characters';
+                      }
+                      return null;
+                    },
+                    controller: _firstNameController,
+                    labelText: 'First Name',
+                    keyboardType: TextInputType.name,
+                    icon: Icons.person_outline_rounded,
+                    textInputAction: TextInputAction.next,
+                  ),
+                ),
+                UIHelper.getHorizontalSpace(UIHelper.paddingSmall),
+                Expanded(
+                  child: CustomTextField(
+                    validator: (lastName) {
+                      if (lastName == null || lastName.isEmpty) {
+                        return 'Last name is required';
+                      } else if (lastName.length < 2) {
+                        return 'Last name must be at least 2 characters';
+                      }
+                      return null;
+                    },
+                    controller: _lastNameController,
+
+                    labelText: 'Last Name',
+                    keyboardType: TextInputType.name,
+                    icon: Icons.person_outline_rounded,
+                    textInputAction: TextInputAction.next,
+                  ),
+                ),
+              ],
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+            CustomTextField(
+              validator: (email) {
+                if (email == null || email.isEmpty) {
+                  return 'Email address is required';
+                } else if (!RegExp(
+                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                ).hasMatch(email)) {
+                  return 'Invalid email address';
+                }
+                return null;
+              },
+              controller: _emailController,
+              labelText: 'Email Address',
+              keyboardType: TextInputType.emailAddress,
+              icon: Icons.email_outlined,
+              textInputAction: TextInputAction.next,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+            CustomTextField(
+              validator: (phone) {
+                if (phone == null || phone.isEmpty) {
+                  return 'Phone number is required';
+                } else if (!RegExp(r'^\+?[0-9]{10,15}$').hasMatch(phone)) {
+                  return 'Invalid phone number';
+                }
+                return null;
+              },
+              controller: _phoneController,
+              labelText: 'Phone Number',
+              keyboardType: TextInputType.phone,
+              icon: Icons.call_outlined,
+              textInputAction: TextInputAction.next,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+            CustomTextField(
+              validator: (password) {
+                if (password == null || password.isEmpty) {
+                  return 'Password is required';
+                } else if (password.length < 8) {
+                  return 'Password must be at least 8 characters';
+                } else if (!RegExp(
+                  r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]',
+                ).hasMatch(password)) {
+                  return 'Password must contain uppercase, lowercase, number and special character';
+                }
+                return null;
+              },
+              controller: _passwordController,
+              labelText: 'Password',
+              obscureText: true,
+              icon: Icons.lock_outline,
+              textInputAction: TextInputAction.next,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+            CustomTextField(
+              validator: (confirmPassword) {
+                if (confirmPassword == null || confirmPassword.isEmpty) {
+                  return 'Please confirm your password';
+                } else if (confirmPassword != _passwordController.text) {
+                  return 'Passwords do not match';
+                }
+                return null;
+              },
+              controller: _confirmPasswordController,
+              labelText: 'Confirm Password',
+              obscureText: true,
+              icon: Icons.lock_outline,
+              textInputAction: TextInputAction.done,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingSmall),
+
+            // Terms and Conditions
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Checkbox(
@@ -267,24 +373,34 @@ class _SignUpScreenState extends State<SignUpScreen>
                     padding: const EdgeInsets.only(top: 12),
                     child: RichText(
                       text: TextSpan(
-                        style: AppTextStyles.caption(brightness),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
                         children: [
                           const TextSpan(text: 'I agree to the '),
                           TextSpan(
                             text: 'Terms of Service',
-                            style: TextStyle(
-                              color: AppColor.accentBlue(brightness),
-                              fontWeight: FontWeight.w600,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.labelSmall?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
+                              decorationColor:
+                                  Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                           const TextSpan(text: ' and '),
                           TextSpan(
                             text: 'Privacy Policy',
-                            style: TextStyle(
-                              color: AppColor.accentBlue(brightness),
-                              fontWeight: FontWeight.w600,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.labelSmall?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.w700,
                               decoration: TextDecoration.underline,
+                              decorationColor:
+                                  Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ],
@@ -294,29 +410,32 @@ class _SignUpScreenState extends State<SignUpScreen>
                 ),
               ],
             ),
-          ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
 
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          SizedBox(
-            width: double.infinity,
-            child: CustomButton(
+            CustomButton(
               text: 'Create Account',
               onPressed:
                   _acceptTerms
                       ? () {
-                        Navigator.pushReplacementNamed(context, '/profile');
+                        if (_formKey.currentState!.validate()) {
+                          context.read<SignUpBloc>().add(
+                            SignUpSubmittedEvent(
+                              firstName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              email: _emailController.text,
+                              phone: _phoneController.text,
+                              password: _passwordController.text,
+                              confirmPassword: _confirmPasswordController.text,
+                              acceptTerms: _acceptTerms,
+                            ),
+                          );
+                        }
                       }
                       : null,
               isEnabled: _acceptTerms,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -328,23 +447,25 @@ class _SignUpScreenState extends State<SignUpScreen>
           children: [
             Expanded(
               child: Divider(
-                color: AppTextStyles.body(brightness).color?.withOpacity(0.3),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Or sign up with',
-                style: AppTextStyles.caption(brightness).copyWith(
-                  color: AppTextStyles.caption(
-                    brightness,
-                  ).color?.withOpacity(0.6),
+                'Or Sign Up with',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
             Expanded(
               child: Divider(
-                color: AppTextStyles.body(brightness).color?.withOpacity(0.3),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
           ],
@@ -357,8 +478,7 @@ class _SignUpScreenState extends State<SignUpScreen>
             Expanded(
               child: _buildSocialButton(
                 'Google',
-                Icons.g_mobiledata,
-                Colors.red,
+                AppIcons.googleIcon,
                 brightness,
                 () {},
               ),
@@ -367,8 +487,7 @@ class _SignUpScreenState extends State<SignUpScreen>
             Expanded(
               child: _buildSocialButton(
                 'Apple',
-                Icons.apple,
-                Colors.black,
+                AppIcons.appleIcon,
                 brightness,
                 () {},
               ),
@@ -376,9 +495,8 @@ class _SignUpScreenState extends State<SignUpScreen>
             UIHelper.getHorizontalSpace(UIHelper.paddingSmall),
             Expanded(
               child: _buildSocialButton(
-                'LinkedIn',
-                Icons.business_center,
-                Colors.blue.shade700,
+                'Microsoft',
+                AppIcons.microsoftIcon,
                 brightness,
                 () {},
               ),
@@ -391,40 +509,41 @@ class _SignUpScreenState extends State<SignUpScreen>
 
   Widget _buildSocialButton(
     String text,
-    IconData icon,
-    Color iconColor,
+    String icon,
     Brightness brightness,
     VoidCallback onPressed,
   ) {
-    return Container(
-      height: 48,
+    return SizedBox(
+      height: 50,
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
           side: BorderSide(
             color:
                 brightness == Brightness.dark
-                    ? Colors.white.withOpacity(0.2)
-                    : Colors.black.withOpacity(0.1),
+                    ? AppColors.whiteCommon.withValues(alpha: 0.1)
+                    : AppColors.blackCommon.withValues(alpha: 0.05),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           backgroundColor:
               brightness == Brightness.dark
-                  ? Colors.white.withOpacity(0.02)
-                  : Colors.white.withOpacity(0.5),
+                  ? AppColors.whiteCommon.withValues(alpha: 0.02)
+                  : AppColors.whiteCommon.withValues(alpha: 0.5),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: iconColor),
+            SizedBox(width: 20, height: 20, child: Image.asset(icon)),
             const SizedBox(height: 2),
             Text(
               text,
-              style: AppTextStyles.caption(
-                brightness,
-              ).copyWith(fontSize: 10, fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -436,21 +555,21 @@ class _SignUpScreenState extends State<SignUpScreen>
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color:
               brightness == Brightness.dark
-                  ? Colors.white.withOpacity(0.1)
-                  : Colors.black.withOpacity(0.05),
+                  ? AppColors.whiteCommon.withValues(alpha: 0.1)
+                  : AppColors.blackCommon.withValues(alpha: 0.05),
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Already have an account? ',
-            style: AppTextStyles.body(brightness).copyWith(
-              color: AppTextStyles.body(brightness).color?.withOpacity(0.8),
+            AppStrings.alreadyHaveAccount,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
           ),
           TextButton(
@@ -463,12 +582,12 @@ class _SignUpScreenState extends State<SignUpScreen>
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Text(
-              'Sign In',
-              style: AppTextStyles.button(brightness).copyWith(
-                color: AppColor.accentPink(brightness),
+              AppStrings.loginButton,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.secondary,
                 fontWeight: FontWeight.w700,
                 decoration: TextDecoration.underline,
-                decorationColor: AppColor.accentPink(brightness),
+                decorationColor: Theme.of(context).colorScheme.secondary,
               ),
             ),
           ),

@@ -1,77 +1,29 @@
 import 'package:flutter/material.dart';
 
-class AppColor {
-  // ----------------- Background Colors -----------------
-  static const Color backgroundLight = Color(
-    0xFFF9F9F9,
-  ); // Light mode background
-  static const Color backgroundDark = Color(0xFF1E1E1E); // Dark mode background
+class AppColors {
+  // LIGHT THEME colors
+  static const Color primaryLight = Color(0xffFF727B);
+  static const Color secondaryLight = Color(0xff006BC7);
+  static const Color labelLight = Color(0xffAEACBA);
+  static const Color fontLight = Color(0xff151515);
+  static const Color primaryContainerLight = Color(0xffF4F4F4);
+  static const Color backgroundLight = Color(0xffFFFFFF);
 
-  // ----------------- Card Colors -----------------
-  static const Color cardLight = Color(0xFFFFFFFF); // Light mode card
-  static const Color cardDark = Color(0xFF2A2A2A); // Dark mode card
+  // DARK THEME colors
+  static const Color primaryDark = Color(0xffFF727B);
+  static const Color secondaryDark = Color(0xffE59236);
+  static const Color labelDark = Color(0xffAEACBA);
+  static const Color fontDark = Color(0xffFFFFFF);
+  static const Color primaryContainerDark = Color(0xff252324);
+  static const Color backgroundDark = Color(0xff18181A);
 
-  // ----------------- Primary Text Colors -----------------
-  static const Color textPrimaryLight = Color(
-    0xFF2D2D2D,
-  ); // Light mode primary text
-  static const Color textPrimaryDark = Color(
-    0xFFD3D3D3,
-  ); // Dark mode primary text
+  // Error Color
+  static const Color errorColor = Color(0xffD51111);
+  // Success Color
+  static const Color successColor = Color(0xff1EC35C);
 
-  // ----------------- Secondary Text Colors -----------------
-  static const Color textSecondaryLight = Color(
-    0xFF757575,
-  ); // Light mode secondary text
-  static const Color textSecondaryDark = Color(
-    0xFFB0B0B0,
-  ); // Dark mode secondary text
-
-  // ----------------- Accent Colors -----------------
-  static const Color accentPinkLight = Color(0xFFFF6B8A); // Pink accent (light)
-  static const Color accentPinkDark = Color(0xFFFF6B8A); // Pink accent (dark)
-
-  static const Color accentBlueLight = Color(
-    0xFF4DA8DA,
-  ); // Blue secondary accent (light)
-  static const Color accentBlueDark = Color(
-    0xFF4DA8DA,
-  ); // Blue secondary accent (dark)
-
-  // ----------------- Success Colors -----------------
-  static const Color successLight = Color(
-    0xFF4CAF50,
-  ); // Light mode success (green)
-  static const Color successDark = Color(
-    0xFF4CAF50,
-  ); // Dark mode success (green)
-
-  // ----------------- Error Colors -----------------
-  static const Color errorLight = Color(0xFFEF5350); // Light mode error (red)
-  static const Color errorDark = Color(0xFFEF5350); // Dark mode error (red)
-
-  // ----------------- Getters for Theme Mode -----------------
-  static Color background(Brightness brightness) =>
-      brightness == Brightness.dark ? backgroundDark : backgroundLight;
-
-  static Color card(Brightness brightness) =>
-      brightness == Brightness.dark ? cardDark : cardLight;
-
-  static Color primaryText(Brightness brightness) =>
-      brightness == Brightness.dark ? textPrimaryDark : textPrimaryLight;
-
-  static Color secondaryText(Brightness brightness) =>
-      brightness == Brightness.dark ? textPrimaryDark : textPrimaryLight;
-
-  static Color accentPink(Brightness brightness) =>
-      brightness == Brightness.dark ? accentPinkDark : accentPinkLight;
-
-  static Color accentBlue(Brightness brightness) =>
-      brightness == Brightness.dark ? accentBlueDark : accentBlueLight;
-
-  static Color success(Brightness brightness) =>
-      brightness == Brightness.dark ? successDark : successLight;
-
-  static Color error(Brightness brightness) =>
-      brightness == Brightness.dark ? errorDark : errorLight;
+  // common
+  static const Color whiteCommon = Color(0xffFFFFFF);
+  static const Color blackCommon = Color(0xff000000);
 }
+
