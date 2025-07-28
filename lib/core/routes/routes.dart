@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_shakti/features/add_friend/views/add_friend_screen.dart';
 import 'package:project_shakti/features/bottom_nav/views/custom_bottom_nav.dart';
 import 'package:project_shakti/features/edit_friend/views/edit_friend_screen.dart';
+import 'package:project_shakti/features/end_trip/views/end_trip.dart';
 import 'package:project_shakti/features/home/views/home_screen.dart';
 
 import 'package:project_shakti/features/login/views/login_screen.dart';
@@ -31,6 +32,7 @@ class AppRoutes {
   static const String bottomNav = '/bottom_nav';
   static const String onBoarding = '/onBoarding';
   static const String startTrip = '/startTrip';
+  static const String endTrip = '/endTrip';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -51,6 +53,7 @@ class AppRoutes {
       bottomNav: (context) => const CustomBottomNav(),
       onBoarding: (context) => const OnBoardingScreen(),
       startTrip: (context) => const TripMapScreen(),
+      endTrip: (context) => const EndTripScreen(),
     };
   }
 }
