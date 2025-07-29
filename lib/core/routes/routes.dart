@@ -13,6 +13,7 @@ import 'package:project_shakti/features/fake_call/views/fake_call.dart';
 import 'package:project_shakti/features/friend_list/views/friend_list_page.dart';
 import 'package:project_shakti/features/splash/views/splash_screen.dart';
 import 'package:project_shakti/features/start_trip/views/start_trip_screen.dart';
+import 'package:project_shakti/features/trip_history/views/trip_history_screen.dart';
 
 class AppRoutes {
   static const String splash = '/splash';
@@ -29,9 +30,11 @@ class AppRoutes {
   static const String bottomNav = '/bottom_nav';
   static const String onBoarding = '/onBoarding';
   static const String startTrip = '/startTrip';
+  static const String tripHistory = '/tripHistory';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
+      tripHistory: (context) => const TripHistoryScreen(),
       splash: (context) => const SplashScreen(),
       login: (context) => const LoginScreen(),
       signup: (context) => const SignUpScreen(),
