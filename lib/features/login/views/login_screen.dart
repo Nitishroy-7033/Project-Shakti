@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_shakti/core/constants/app_icons.dart';
 import 'package:project_shakti/core/constants/app_strings.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
+import 'package:project_shakti/core/utils/sharedpref_helper.dart';
 import 'package:project_shakti/core/utils/ui_helper.dart';
 import 'package:project_shakti/core/widgets/custom_button.dart';
+import 'package:project_shakti/core/widgets/custom_loading_indicator.dart';
 import 'package:project_shakti/core/widgets/custom_text_field.dart';
+import 'package:project_shakti/features/login/bloc/login_bloc.dart';
+import 'package:project_shakti/features/login/bloc/login_event.dart';
+import 'package:project_shakti/features/login/bloc/login_state.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function(ThemeMode)? onThemeChanged;
@@ -17,6 +23,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
+  final SharedPrefsHelper _prefsHelper = SharedPrefsHelper();
+
+  final _formKey = GlobalKey<FormState>();
+
+  // Add these controllers
+  final _identifierController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
@@ -51,6 +65,9 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void dispose() {
+    _identifierController.dispose();
+    _passwordController.dispose();
+
     _fadeController.dispose();
     _slideController.dispose();
     super.dispose();
@@ -100,7 +117,40 @@ class _LoginScreenState extends State<LoginScreen>
                       UIHelper.getVerticalSpace(UIHelper.paddingLarge),
 
                       // Login Form
-                      _buildLoginForm(brightness),
+                      // _buildLoginForm(brightness),
+                      BlocConsumer<LoginBloc, LoginState>(
+                        listener: (context, state) async {
+                          if (state is LoginSuccess) {
+                            _prefsHelper.saveToken(state.token ?? '');
+
+                            print('Token saved: ${state.token}');
+                            Navigator.pushReplacementNamed(
+                              context,
+                              '/bottom_nav',
+                            );
+                            UIHelper.showSnackBar(
+                              context,
+                              state.message,
+                              isError: false,
+                            );
+                          } else if (state is LoginFailure) {
+                            UIHelper.showSnackBar(
+                              context,
+                              state.message,
+                              isError: true,
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          return Stack(
+                            children: [
+                              _buildLoginForm(brightness),
+                              if (state is LoginLoading)
+                                const Center(child: CustomLoadingIndicator()),
+                            ],
+                          );
+                        },
+                      ),
 
                       UIHelper.getVerticalSpace(UIHelper.paddingMedium),
 
@@ -168,68 +218,102 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Widget _buildLoginForm(Brightness brightness) {
-    return Container(
-      padding: EdgeInsets.all(UIHelper.paddingLarge),
-      decoration: BoxDecoration(
-        color:
-            brightness == Brightness.dark
-                ? AppColors.whiteCommon.withValues(alpha: 0.05)
-                : AppColors.whiteCommon.withValues(alpha: 0.7),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
+    return Form(
+      key: _formKey,
+      child: Container(
+        padding: EdgeInsets.all(UIHelper.paddingLarge),
+        decoration: BoxDecoration(
           color:
               brightness == Brightness.dark
-                  ? AppColors.whiteCommon.withValues(alpha: 0.1)
-                  : AppColors.blackCommon.withValues(alpha: 0.05),
+                  ? AppColors.whiteCommon.withValues(alpha: 0.05)
+                  : AppColors.whiteCommon.withValues(alpha: 0.7),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color:
+                brightness == Brightness.dark
+                    ? AppColors.whiteCommon.withValues(alpha: 0.1)
+                    : AppColors.blackCommon.withValues(alpha: 0.05),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.blackCommon.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.blackCommon.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          CustomTextField(
-            labelText: 'Email Address',
-            keyboardType: TextInputType.emailAddress,
-            icon: Icons.email_outlined,
-            textInputAction: TextInputAction.next,
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          CustomTextField(
-            labelText: 'Password',
-            obscureText: true,
-            icon: Icons.lock_outline,
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.done,
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {},
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              ),
-              child: Text(
-                'Forgot Password?',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.w600,
+        child: Column(
+          children: [
+            CustomTextField(
+              controller: _identifierController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email address';
+                }
+                return null;
+              },
+              labelText: 'Email Address',
+              keyboardType: TextInputType.emailAddress,
+              icon: Icons.email_outlined,
+              textInputAction: TextInputAction.next,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+            CustomTextField(
+              controller: _passwordController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
+              labelText: 'Password',
+              obscureText: true,
+              icon: Icons.lock_outline,
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.done,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                ),
+                child: Text(
+                  'Forgot Password?',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingSmall),
-          CustomButton(
-            text: AppStrings.loginButton,
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/bottom_nav');
-            },
-          ),
-        ],
+            UIHelper.getVerticalSpace(UIHelper.paddingSmall),
+
+            // CustomButton(
+            //   text: AppStrings.loginButton,
+            //   onPressed: () {
+            //     Navigator.pushReplacementNamed(context, '/bottom_nav');
+            //   },
+            // ),
+            CustomButton(
+              text: AppStrings.loginButton,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  context.read<LoginBloc>().add(
+                    LoginSubmittedEvent(
+                      identifier: _identifierController.text,
+                      password: _passwordController.text,
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
