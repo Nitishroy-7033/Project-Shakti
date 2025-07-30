@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_shakti/core/routes/routes.dart';
 import 'package:project_shakti/core/theme/app_theme.dart';
 import 'package:project_shakti/core/utils/update_status_bar.dart';
+import 'package:project_shakti/features/live_trip/views/live_trip_screen.dart';
 import 'package:project_shakti/features/login/bloc/login_bloc.dart';
 import 'package:project_shakti/features/login/repository/login_repository.dart';
 import 'package:project_shakti/features/signup/bloc/signup_bloc.dart';

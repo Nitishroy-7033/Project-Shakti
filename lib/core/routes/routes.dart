@@ -3,6 +3,7 @@ import 'package:project_shakti/features/add_friend/views/add_friend_screen.dart'
 import 'package:project_shakti/features/bottom_nav/views/custom_bottom_nav.dart';
 import 'package:project_shakti/features/edit_friend/views/edit_friend_screen.dart';
 import 'package:project_shakti/features/home/views/home_screen.dart';
+import 'package:project_shakti/features/live_trip/views/live_trip_screen.dart';
 
 import 'package:project_shakti/features/login/views/login_screen.dart';
 import 'package:project_shakti/features/onboarding/views/on_boarding_screen.dart';
@@ -31,6 +32,8 @@ class AppRoutes {
   static const String bottomNav = '/bottom_nav';
   static const String onBoarding = '/onBoarding';
   static const String startTrip = '/startTrip';
+  static const String liveTrip='/liveTrip';
+
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -51,6 +54,7 @@ class AppRoutes {
       bottomNav: (context) => const CustomBottomNav(),
       onBoarding: (context) => const OnBoardingScreen(),
       startTrip: (context) => const TripMapScreen(),
+      liveTrip:(context)=> const LiveTripScreen(),
     };
   }
 }
