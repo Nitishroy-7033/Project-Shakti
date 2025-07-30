@@ -332,18 +332,19 @@ class _TripMapScreenState extends State<TripMapScreen> {
       onChanged: (value) {
         setState(() => _selectedMode = value!);
       },
-      items: ["Walking", "Driving", "Bicycling", "Transit"].map((mode) {
-        return DropdownMenuItem<String>(
-          value: mode,
-          child: Row(
-            children: [
-              Icon(_getModeIcon(mode), size: 20),
-              const SizedBox(width: 8),
-              Text(mode),
-            ],
-          ),
-        );
-      }).toList(),
+      items:
+          ["Walking", "Driving", "Bicycling", "Transit"].map((mode) {
+            return DropdownMenuItem<String>(
+              value: mode,
+              child: Row(
+                children: [
+                  Icon(_getModeIcon(mode), size: 20),
+                  const SizedBox(width: 8),
+                  Text(mode),
+                ],
+              ),
+            );
+          }).toList(),
     );
   }
 
@@ -463,11 +464,12 @@ class _TripMapScreenState extends State<TripMapScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: _isTripActive ? Colors.orange : Colors.green,
               ),
-              onPressed: _isLoading
-                  ? null
-                  : _isTripActive
-                  ? _stopTrip
-                  : _startTrip,
+              onPressed:
+                  _isLoading
+                      ? null
+                      : _isTripActive
+                      ? _stopTrip
+                      : _startTrip,
               child: Text(
                 _isLoading
                     ? "Loading..."

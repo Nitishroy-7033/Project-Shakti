@@ -12,9 +12,9 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  bool _obscureCurrent = true;
-  bool _obscureNew = true;
-  bool _obscureConfirm = true;
+  final bool _obscureCurrent = true;
+  final bool _obscureNew = true;
+  final bool _obscureConfirm = true;
 
   final _currentController = TextEditingController();
   final _newController = TextEditingController();
