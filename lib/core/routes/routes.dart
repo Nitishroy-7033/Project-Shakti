@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_shakti/features/add_friend/views/add_friend_screen.dart';
 import 'package:project_shakti/features/bottom_nav/views/custom_bottom_nav.dart';
+import 'package:project_shakti/features/community_sos/views/sosHelp_accept_screen.dart';
+import 'package:project_shakti/features/community_sos/views/sosHelp_screen.dart';
 import 'package:project_shakti/features/edit_friend/views/edit_friend_screen.dart';
 import 'package:project_shakti/features/home/views/home_screen.dart';
 import 'package:project_shakti/features/login/views/login_screen.dart';
@@ -27,6 +29,8 @@ class AppRoutes {
   static const String fakeCall = '/fake_call';
   static const String bottomNav = '/bottom_nav';
   static const String onBoarding = '/onBoarding';
+  static const String sosHelp = '/sosHelp';
+  static const String sosHelpAccept = '/sosHelpAccept';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -43,6 +47,8 @@ class AppRoutes {
       home: (context)=> const HomeScreen(),
       bottomNav: (context) =>const CustomBottomNav(),
       onBoarding: (context)=>const  OnBoardingScreen(),
+      sosHelp: (context)=>  SoshelpScreen(),
+      sosHelpAccept: (context)=>  SosHelpAcceptScreen(),
     };
   }
 }

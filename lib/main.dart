@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_shakti/core/routes/routes.dart';
 import 'package:project_shakti/core/theme/app_theme.dart';
 import 'package:project_shakti/core/utils/update_status_bar.dart';
+import 'package:project_shakti/features/community_sos/views/sosHelp_screen.dart';
 
 void main() {
   runApp(const MyApp());
