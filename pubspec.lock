@@ -17,8 +17,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.0"
-<<<<<<< HEAD
-=======
   bloc:
     dependency: transitive
     description:
@@ -27,7 +25,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.0.0"
->>>>>>> 384b51d36f6fa206c63753a2cc933ce8a3adfdd3
   boolean_selector:
     dependency: transitive
     description:
@@ -191,17 +188,10 @@ packages:
     dependency: transitive
     description:
       name: geocoding_ios
-<<<<<<< HEAD
-      sha256: "43bde988312feb1a3cb6c3d514e9f4b04b564d1884fa56bd8241030bbb3bde36"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.2"
-=======
       sha256: "18ab1c8369e2b0dcb3a8ccc907319334f35ee8cf4cfef4d9c8e23b13c65cb825"
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
->>>>>>> 384b51d36f6fa206c63753a2cc933ce8a3adfdd3
   geocoding_platform_interface:
     dependency: transitive
     description:
@@ -490,8 +480,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
-<<<<<<< HEAD
-=======
   provider:
     dependency: transitive
     description:
@@ -500,7 +488,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.5"
->>>>>>> 384b51d36f6fa206c63753a2cc933ce8a3adfdd3
   sanitize_html:
     dependency: transitive
     description:

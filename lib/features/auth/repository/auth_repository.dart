@@ -1,18 +1,9 @@
-
 class AuthRepository {
-
-
-
-  Future<void> login(String phoneNumber,String pwd) async {
-    try{
+  Future<void> login(String phoneNumber, String pwd) async {
+    try {
       // var response = await ApiCall
-
-    }
-    catch(ex)
-    {
+    } catch (ex) {
       print(ex);
     }
-  } 
-
-
+  }
 }

@@ -38,10 +38,7 @@ dependencies:
   flutter_svg: ^2.2.0
   google_fonts: ^6.2.1
   permission_handler: ^12.0.0+1
-<<<<<<< HEAD
-=======
   smooth_page_indicator: ^1.2.1
->>>>>>> 384b51d36f6fa206c63753a2cc933ce8a3adfdd3
   http: ^1.4.0
   google_maps_flutter: ^2.12.3
   geocoding: ^4.0.0
