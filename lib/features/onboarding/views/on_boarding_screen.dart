@@ -14,7 +14,7 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
-final SharedPrefsHelper _prefsHelper = SharedPrefsHelper();
+  final SharedPrefsHelper _prefsHelper = SharedPrefsHelper();
 
   //controller to keep track of which page we're on
   final PageController _controller = PageController();
@@ -81,9 +81,11 @@ final SharedPrefsHelper _prefsHelper = SharedPrefsHelper();
                       ),
                       //next or done
                       GestureDetector(
-                        onTap: () async{
+                        onTap: () async {
                           if (onLastPage) {
-                             await _prefsHelper.setOnboarded(true); // ← this line
+                            await _prefsHelper.setOnboarded(
+                              true,
+                            ); // ← this line
                             Navigator.pushReplacementNamed(context, '/login');
                           } else {
                             _controller.nextPage(
