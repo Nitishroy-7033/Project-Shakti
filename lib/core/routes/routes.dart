@@ -15,6 +15,7 @@ import 'package:project_shakti/features/edit_profile/views/edit_profile_screen.d
 import 'package:project_shakti/features/fake_call/views/fake_call.dart';
 import 'package:project_shakti/features/friend_list/views/friend_list_page.dart';
 import 'package:project_shakti/features/signup/views/signup_screen.dart';
+import 'package:project_shakti/features/sos_options/view/sos_options_screen.dart';
 import 'package:project_shakti/features/splash/views/splash_screen.dart';
 import 'package:project_shakti/features/start_trip/views/start_trip_screen.dart';
 
@@ -35,6 +36,7 @@ class AppRoutes {
   static const String startTrip = '/startTrip';
   static const String endTrip = '/endTrip';
   static const String liveTrip='/liveTrip';
+  static const String sosControlSettings = '/sosControlSettings';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -57,6 +59,7 @@ class AppRoutes {
       startTrip: (context) => const TripMapScreen(),
       endTrip: (context) => const EndTripScreen(),
       liveTrip: (context) => const LiveTripScreen(),
+      sosControlSettings: (context) => const SosControlSettingsScreen(),
     };
   }
 }
