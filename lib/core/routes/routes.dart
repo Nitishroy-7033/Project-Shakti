@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_shakti/core/widgets/trip_timeout_widget/trip_timeout_popup.dart';
 import 'package:project_shakti/features/add_friend/views/add_friend_screen.dart';
 import 'package:project_shakti/features/bottom_nav/views/custom_bottom_nav.dart';
 import 'package:project_shakti/features/edit_friend/views/edit_friend_screen.dart';
@@ -35,6 +36,7 @@ class AppRoutes {
   static const String startTrip = '/startTrip';
   static const String endTrip = '/endTrip';
   static const String liveTrip='/liveTrip';
+  static const String tripTimeOutPopup='/tripTimeOutPopup';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -57,6 +59,7 @@ class AppRoutes {
       startTrip: (context) => const TripMapScreen(),
       endTrip: (context) => const EndTripScreen(),
       liveTrip: (context) => const LiveTripScreen(),
+      tripTimeOutPopup: (context) => const TripTimeOutPopup(),
     };
   }
 }
