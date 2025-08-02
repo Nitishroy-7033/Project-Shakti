@@ -123,7 +123,7 @@ class FriendListPage extends StatelessWidget {
                 clipBehavior: Clip.hardEdge,
                 child: ListTile(
                   leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(20),
                     child: Image.network(
                       width: 40,
                       "https://storage.pixteller.com/designs/designs-images/2019-01-10/07/profile-phote-avatar-human-girl-yellow-fashion-1-5c3784f592e84.png",
