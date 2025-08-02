@@ -16,6 +16,7 @@ import 'package:project_shakti/features/change_password/views/change_password_sc
 import 'package:project_shakti/features/edit_profile/views/edit_profile_screen.dart';
 import 'package:project_shakti/features/fake_call/views/fake_call.dart';
 import 'package:project_shakti/features/friend_list/views/friend_list_page.dart';
+import 'package:project_shakti/features/safe_call/views/start_trip_screen.dart';
 import 'package:project_shakti/features/safety_tips/views/safety_tips_screen.dart';
 import 'package:project_shakti/features/signup/views/signup_screen.dart';
 import 'package:project_shakti/features/sos_options/view/sos_options_screen.dart';
@@ -38,6 +39,7 @@ class AppRoutes {
   static const String bottomNav = '/bottom_nav';
   static const String onBoarding = '/onBoarding';
   static const String startTrip = '/startTrip';
+  static const String safeCall = '/safeCall';
   static const String tripHistory = '/tripHistory';
   static const String endTrip = '/endTrip';
   static const String liveTrip = '/liveTrip';
@@ -65,6 +67,7 @@ class AppRoutes {
       bottomNav: (context) => const CustomBottomNav(),
       onBoarding: (context) => const OnBoardingScreen(),
       startTrip: (context) => const TripMapScreen(),
+      safeCall: (context) => const SafeCall(),
       endTrip: (context) => const EndTripScreen(),
       liveTrip: (context) => const LiveTripScreen(),
       sosControlSettings: (context) => const SosControlSettingsScreen(),

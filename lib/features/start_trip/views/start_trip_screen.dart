@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:project_shakti/core/theme/app_text_styles.dart';
+import 'package:project_shakti/core/widgets/custom_button.dart';
+
+import '../../../core/theme/app_colors.dart';
 
 class TripMapScreen extends StatefulWidget {
   const TripMapScreen({super.key});
@@ -17,20 +21,16 @@ class TripMapScreen extends StatefulWidget {
 class _TripMapScreenState extends State<TripMapScreen> {
   late GoogleMapController _mapController;
 
-  final _sourceController = TextEditingController();
-  final _destinationController = TextEditingController();
-  final _dateTimeController = TextEditingController();
+  final TextEditingController _pickupController = TextEditingController();
+final TextEditingController _dropController = TextEditingController();
 
   LatLng? _sourceLatLng;
   LatLng? _destinationLatLng;
   List<LatLng> _polylinePoints = [];
   String _selectedMode = "Bicycling";
-  DateTime? _selectedDateTime;
-
-  int _currentProgressIndex = 0;
   bool _isLoading = false;
   bool _isTripActive = false;
-
+  int _currentProgressIndex = 0;
   Timer? _tripTimer;
 
   static const String _apiKey = "AIzaSyDK4ylJEGO07EmXn9FFybZDzKy_7k2Mo40";
@@ -39,9 +39,8 @@ class _TripMapScreenState extends State<TripMapScreen> {
   @override
   void dispose() {
     _tripTimer?.cancel();
-    _sourceController.dispose();
-    _destinationController.dispose();
-    _dateTimeController.dispose();
+    _pickupController.dispose();
+   _dropController.dispose();
     super.dispose();
   }
 
@@ -61,30 +60,59 @@ class _TripMapScreenState extends State<TripMapScreen> {
     return null;
   }
 
-  Future<void> _getRoute() async {
-    if (_sourceLatLng == null || _destinationLatLng == null) return;
+ Future<void> _getRoute() async {
+  if (_sourceLatLng == null || _destinationLatLng == null) return;
 
-    final url =
-        "https://maps.googleapis.com/maps/api/directions/json"
-        "?origin=${_sourceLatLng!.latitude},${_sourceLatLng!.longitude}"
-        "&destination=${_destinationLatLng!.latitude},${_destinationLatLng!.longitude}"
-        "&mode=${_selectedMode.toLowerCase()}"
-        "&key=$_apiKey";
+  final url = Uri.parse('https://routes.googleapis.com/directions/v2:computeRoutes');
 
-    try {
-      final response = await http.get(Uri.parse(url));
-      final json = jsonDecode(response.body);
+  final headers = {
+    'Content-Type': 'application/json',
+    'X-Goog-Api-Key': _apiKey,
+    'X-Goog-FieldMask': 'routes.polyline.encodedPolyline',
+  };
 
-      if (json['routes'].isNotEmpty) {
-        final points = json['routes'][0]['overview_polyline']['points'];
-        _polylinePoints = _decodePolyline(points);
+  final body = jsonEncode({
+    "origin": {
+      "location": {
+        "latLng": {
+          "latitude": _sourceLatLng!.latitude,
+          "longitude": _sourceLatLng!.longitude
+        }
+      }
+    },
+    "destination": {
+      "location": {
+        "latLng": {
+          "latitude": _destinationLatLng!.latitude,
+          "longitude": _destinationLatLng!.longitude
+        }
+      }
+    },
+    "travelMode": _selectedMode.toUpperCase(), // must be one of: DRIVE, BICYCLE, WALK, TRANSIT
+  });
+
+  try {
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      final routes = jsonResponse['routes'];
+      if (routes != null && routes.isNotEmpty) {
+        final encodedPolyline = routes[0]['polyline']['encodedPolyline'];
+        _polylinePoints = _decodePolyline(encodedPolyline);
         _currentProgressIndex = 0;
         setState(() {});
+      } else {
+        _showErrorSnackBar("No routes found.");
       }
-    } catch (e) {
-      _showErrorSnackBar("Failed to get route: $e");
+    } else {
+      _showErrorSnackBar("Route API failed: ${response.body}");
     }
+  } catch (e) {
+    _showErrorSnackBar("Failed to get route: $e");
   }
+}
+
 
   List<LatLng> _decodePolyline(String encoded) {
     List<LatLng> points = [];
@@ -146,9 +174,9 @@ class _TripMapScreenState extends State<TripMapScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final source = await _getCoordinates(_sourceController.text.trim());
+      final source = await _getCoordinates(_pickupController.text.trim());
       final destination = await _getCoordinates(
-        _destinationController.text.trim(),
+        _dropController.text.trim(),
       );
 
       if (source == null || destination == null) {
@@ -188,8 +216,8 @@ class _TripMapScreenState extends State<TripMapScreen> {
   }
 
   bool _validateInputs() {
-    if (_sourceController.text.trim().isEmpty ||
-        _destinationController.text.trim().isEmpty) {
+    if (_pickupController.text.trim().isEmpty ||
+        _dropController.text.trim().isEmpty) {
       _showErrorSnackBar("Please enter both source and destination");
       return false;
     }
@@ -216,39 +244,11 @@ class _TripMapScreenState extends State<TripMapScreen> {
     }
   }
 
-  Future<void> _pickDateTime() async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (date == null) return;
-
-    final time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (time == null) return;
-
-    final dateTime = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.minute,
-    );
-    setState(() {
-      _selectedDateTime = dateTime;
-      _dateTimeController.text = "${dateTime.toLocal()}".split(".")[0];
-    });
-  }
-
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: AppColors.errorColor,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -258,7 +258,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.successColor,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -266,8 +266,15 @@ class _TripMapScreenState extends State<TripMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     return Scaffold(
-      appBar: AppBar(title: const Text("Trip Planner")),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "Trip Planner",
+          style: AppTextStyles.appBarTitle(brightness),
+        ),
+      ),
       body: Column(
         children: [
           _buildTripForm(),
@@ -280,42 +287,104 @@ class _TripMapScreenState extends State<TripMapScreen> {
   }
 
   Widget _buildTripForm() {
+    final brightness = Theme.of(context).brightness;
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
-            controller: _sourceController,
-            decoration: const InputDecoration(
-              labelText: "Start Location",
-              prefixIcon: Icon(Icons.my_location),
-              border: OutlineInputBorder(),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.fontDark,
+              border: Border.all(color: Color(0xFFE0E0E0)),
+              borderRadius: BorderRadius.circular(12),
             ),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _destinationController,
-            decoration: const InputDecoration(
-              labelText: "Destination",
-              prefixIcon: Icon(Icons.location_on),
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 12),
-          GestureDetector(
-            onTap: _pickDateTime,
-            child: AbsorbPointer(
-              child: TextField(
-                controller: _dateTimeController,
-                decoration: const InputDecoration(
-                  labelText: "Date & Time",
-                  prefixIcon: Icon(Icons.access_time),
-                  border: OutlineInputBorder(),
-                ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  // Current Location Row
+                  Row(
+          children: [
+             Container(
+                        width: 10,
+                        height: 10,
+                        decoration: const BoxDecoration(
+                          color: AppColors.successColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+           
+            const SizedBox(width: 16),
+            Expanded(
+                        child: TextField(
+                          controller: _pickupController,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: AppColors.blackCommon,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "Enter your Location",
+                            hintStyle: AppTextStyles.label(
+                              brightness,
+                            ).copyWith(color: AppColors.labelLight),
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ),
+            const SizedBox(width: 16),
+          ],
+        ),
+
+                  const Divider(
+                    color: Color(0xFFE0E0E0),
+                    thickness: 1,
+                    height: 20,
+                    indent: 16,
+                    endIndent: 16,
+                  ),
+
+                  // Drop Location Row
+                  Row(
+                    children: [
+                      Container(
+                        width: 10,
+                        height: 10,
+                        decoration: const BoxDecoration(
+                          color: AppColors.errorColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: TextField(
+                          controller: _dropController,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: AppColors.blackCommon,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "Drop location",
+                            hintStyle: AppTextStyles.label(
+                              brightness,
+                            ).copyWith(color: AppColors.labelLight),
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 12),
+
+          const SizedBox(height: 16),
+
           _buildModeSelector(),
         ],
       ),
@@ -323,28 +392,44 @@ class _TripMapScreenState extends State<TripMapScreen> {
   }
 
   Widget _buildModeSelector() {
-    return DropdownButtonFormField<String>(
-      value: _selectedMode,
-      decoration: const InputDecoration(
-        labelText: "Travel Mode",
-        border: OutlineInputBorder(),
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.fontDark,
+        border: Border.all(color: Color(0xFFE0E0E0)),
+        borderRadius: BorderRadius.circular(12),
       ),
-      onChanged: (value) {
-        setState(() => _selectedMode = value!);
-      },
-      items:
-          ["Walking", "Driving", "Bicycling", "Transit"].map((mode) {
-            return DropdownMenuItem<String>(
-              value: mode,
-              child: Row(
-                children: [
-                  Icon(_getModeIcon(mode), size: 20),
-                  const SizedBox(width: 8),
-                  Text(mode),
-                ],
-              ),
-            );
-          }).toList(),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: DropdownButtonFormField<String>(
+        value: _selectedMode,
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(vertical: 16),
+        ),
+        icon: Icon(Icons.arrow_drop_down, color: Colors.grey[600]),
+        dropdownColor: Colors.white,
+        style: TextStyle(
+          color: AppColors.labelDark,
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+        onChanged: (value) {
+          setState(() => _selectedMode = value!);
+        },
+        items:
+            ["Walking", "Driving", "Bicycling", "Transit"].map((mode) {
+              return DropdownMenuItem<String>(
+                value: mode,
+                child: Row(
+                  children: [
+                    Icon(_getModeIcon(mode), size: 20, color: Colors.grey[600]),
+                    const SizedBox(width: 8),
+                    Text(mode),
+                  ],
+                ),
+              );
+            }).toList(),
+      ),
     );
   }
 
@@ -443,7 +528,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
         polylines.add(
           Polyline(
             polylineId: const PolylineId("traveled"),
-            color: Colors.green,
+            color: AppColors.successColor,
             width: 6,
             points: _polylinePoints.sublist(0, _currentProgressIndex + 1),
           ),
@@ -455,41 +540,27 @@ class _TripMapScreenState extends State<TripMapScreen> {
   }
 
   Widget _buildActionButtons() {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _isTripActive ? Colors.orange : Colors.green,
-              ),
-              onPressed:
-                  _isLoading
-                      ? null
-                      : _isTripActive
-                      ? _stopTrip
-                      : _startTrip,
-              child: Text(
+      child: Center(
+        child: SizedBox(
+          width: 110,
+          child: CustomButton(
+            text:
                 _isLoading
                     ? "Loading..."
                     : _isTripActive
                     ? "Stop Trip"
                     : "Start Trip",
-              ),
-            ),
+            isLoading: _isLoading,
+            isEnabled: !_isLoading,
+            onPressed: _isTripActive ? _stopTrip : _startTrip,
+            backgroundColor:
+                _isTripActive ? AppColors.fontDark : AppColors.successColor,
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              onPressed: () {
-                _showErrorSnackBar("SOS feature not implemented yet");
-              },
-              child: const Text("SOS"),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
