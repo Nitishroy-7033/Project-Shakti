@@ -21,6 +21,7 @@ import 'package:project_shakti/features/signup/views/signup_screen.dart';
 import 'package:project_shakti/features/sos_options/view/sos_options_screen.dart';
 import 'package:project_shakti/features/splash/views/splash_screen.dart';
 import 'package:project_shakti/features/start_trip/views/start_trip_screen.dart';
+import 'package:project_shakti/features/trip_history/views/trip_history_screen.dart';
 
 class AppRoutes {
   static const String splash = '/splash';
@@ -37,6 +38,7 @@ class AppRoutes {
   static const String bottomNav = '/bottom_nav';
   static const String onBoarding = '/onBoarding';
   static const String startTrip = '/startTrip';
+  static const String tripHistory = '/tripHistory';
   static const String endTrip = '/endTrip';
   static const String liveTrip = '/liveTrip';
   static const String sosControlSettings = '/sosControlSettings';
@@ -46,6 +48,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
+      tripHistory: (context) => const TripHistoryScreen(),
       splash: (context) => const SplashScreen(),
       login: (context) => const LoginScreen(),
 
