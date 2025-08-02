@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_shakti/features/add_friend/views/add_friend_screen.dart';
 import 'package:project_shakti/features/bottom_nav/views/custom_bottom_nav.dart';
+import 'package:project_shakti/features/community_sos/views/sosHelp_accept_screen.dart';
+import 'package:project_shakti/features/community_sos/views/sosHelp_screen.dart';
 import 'package:project_shakti/features/edit_friend/views/edit_friend_screen.dart';
 import 'package:project_shakti/features/end_trip/views/end_trip.dart';
 import 'package:project_shakti/features/home/views/home_screen.dart';
@@ -38,6 +40,8 @@ class AppRoutes {
   static const String endTrip = '/endTrip';
   static const String liveTrip = '/liveTrip';
   static const String sosControlSettings = '/sosControlSettings';
+  static const String sosHelp = '/sosHelp';
+  static const String sosHelpAccept = '/sosHelpAccept';
   static const String safetytips = '/safetyTips';
 
   static Map<String, WidgetBuilder> getRoutes() {
