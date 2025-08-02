@@ -16,6 +16,7 @@ import 'package:project_shakti/features/change_password/views/change_password_sc
 import 'package:project_shakti/features/edit_profile/views/edit_profile_screen.dart';
 import 'package:project_shakti/features/fake_call/views/fake_call.dart';
 import 'package:project_shakti/features/friend_list/views/friend_list_page.dart';
+import 'package:project_shakti/features/safety_tips/views/safety_tips_screen.dart';
 import 'package:project_shakti/features/signup/views/signup_screen.dart';
 import 'package:project_shakti/features/sos_options/view/sos_options_screen.dart';
 import 'package:project_shakti/features/splash/views/splash_screen.dart';
@@ -37,19 +38,19 @@ class AppRoutes {
   static const String onBoarding = '/onBoarding';
   static const String startTrip = '/startTrip';
   static const String endTrip = '/endTrip';
-  static const String liveTrip='/liveTrip';
+  static const String liveTrip = '/liveTrip';
   static const String sosControlSettings = '/sosControlSettings';
   static const String sosHelp = '/sosHelp';
   static const String sosHelpAccept = '/sosHelpAccept';
+  static const String safetytips = '/safetyTips';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
       splash: (context) => const SplashScreen(),
       login: (context) => const LoginScreen(),
-     
+
       signup: (context) => const SignUpScreen(),
-    
-     
+
       profile: (context) => const ProfileScreen(),
       friendList: (context) => const FriendListPage(),
       addFriend: (context) => const AddFriendPage(),
@@ -64,6 +65,7 @@ class AppRoutes {
       endTrip: (context) => const EndTripScreen(),
       liveTrip: (context) => const LiveTripScreen(),
       sosControlSettings: (context) => const SosControlSettingsScreen(),
+      safetytips: (context) => const SafetyTipsScreen(),
     };
   }
 }
