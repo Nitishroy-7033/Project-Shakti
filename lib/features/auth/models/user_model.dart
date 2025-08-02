@@ -1,4 +1,3 @@
-
 class UserModel {
   String? id;
   String? phoneNumber;
@@ -8,16 +7,16 @@ class UserModel {
   UserModel({this.id, this.phoneNumber, this.email, this.profilePhoto});
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is String) {
+    if (json["id"] is String) {
       id = json["id"];
     }
-    if(json["phoneNumber"] is String) {
+    if (json["phoneNumber"] is String) {
       phoneNumber = json["phoneNumber"];
     }
-    if(json["email"] is String) {
+    if (json["email"] is String) {
       email = json["email"];
     }
-    if(json["profilePhoto"] is String) {
+    if (json["profilePhoto"] is String) {
       profilePhoto = json["profilePhoto"];
     }
   }
@@ -27,11 +26,11 @@ class UserModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["id"] = id;
-    _data["phoneNumber"] = phoneNumber;
-    _data["email"] = email;
-    _data["profilePhoto"] = profilePhoto;
-    return _data;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["id"] = id;
+    data["phoneNumber"] = phoneNumber;
+    data["email"] = email;
+    data["profilePhoto"] = profilePhoto;
+    return data;
   }
 }

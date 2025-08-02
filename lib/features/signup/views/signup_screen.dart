@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_shakti/core/constants/app_icons.dart';
 import 'package:project_shakti/core/constants/app_strings.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
 import 'package:project_shakti/core/utils/ui_helper.dart';
 import 'package:project_shakti/core/widgets/custom_button.dart';
+import 'package:project_shakti/core/widgets/custom_loading_indicator.dart';
 import 'package:project_shakti/core/widgets/custom_text_field.dart';
+import 'package:project_shakti/features/signup/bloc/signup_bloc.dart';
+import 'package:project_shakti/features/signup/bloc/signup_event.dart';
+import 'package:project_shakti/features/signup/bloc/signup_state.dart';
 
 class SignUpScreen extends StatefulWidget {
   final Function(ThemeMode)? onThemeChanged;
@@ -17,6 +22,16 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen>
     with TickerProviderStateMixin {
+  final _formKey = GlobalKey<FormState>();
+
+  // Add these controllers
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
@@ -52,6 +67,14 @@ class _SignUpScreenState extends State<SignUpScreen>
 
   @override
   void dispose() {
+    // Dispose controllers
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+
     _fadeController.dispose();
     _slideController.dispose();
     super.dispose();
@@ -95,7 +118,34 @@ class _SignUpScreenState extends State<SignUpScreen>
                       UIHelper.getVerticalSpace(UIHelper.paddingLarge),
 
                       // SignUp Form
-                      _buildSignUpForm(brightness),
+                      // _buildSignUpForm(brightness),
+                      BlocConsumer<SignUpBloc, SignUpState>(
+                        listener: (context, state) {
+                          if (state is SignUpSuccess) {
+                            Navigator.pushReplacementNamed(context, '/login');
+                            UIHelper.showSnackBar(
+                              context,
+                              state.message,
+                              isError: false,
+                            );
+                          } else if (state is SignUpFailure) {
+                            UIHelper.showSnackBar(
+                              context,
+                              state.message,
+                              isError: true,
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          return Stack(
+                            children: [
+                              _buildSignUpForm(brightness),
+                              if (state is SignUpLoading)
+                                const Center(child: CustomLoadingIndicator()),
+                            ],
+                          );
+                        },
+                      ),
 
                       UIHelper.getVerticalSpace(UIHelper.paddingMedium),
 
@@ -165,150 +215,227 @@ class _SignUpScreenState extends State<SignUpScreen>
   }
 
   Widget _buildSignUpForm(Brightness brightness) {
-    return Container(
-      padding: const EdgeInsets.all(UIHelper.paddingLarge),
-      decoration: BoxDecoration(
-        color:
-            brightness == Brightness.dark
-                ? AppColors.whiteCommon.withValues(alpha: 0.05)
-                : AppColors.whiteCommon.withValues(alpha: 0.7),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
+    return Form(
+      key: _formKey,
+      child: Container(
+        padding: const EdgeInsets.all(UIHelper.paddingLarge),
+        decoration: BoxDecoration(
           color:
               brightness == Brightness.dark
-                  ? AppColors.whiteCommon.withValues(alpha: 0.1)
-                  : AppColors.blackCommon.withValues(alpha: 0.05),
+                  ? AppColors.whiteCommon.withValues(alpha: 0.05)
+                  : AppColors.whiteCommon.withValues(alpha: 0.7),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color:
+                brightness == Brightness.dark
+                    ? AppColors.whiteCommon.withValues(alpha: 0.1)
+                    : AppColors.blackCommon.withValues(alpha: 0.05),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.blackCommon.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.blackCommon.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  labelText: 'First Name',
-                  keyboardType: TextInputType.name,
-                  icon: Icons.person_outline_rounded,
-                  textInputAction: TextInputAction.next,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                    validator: (firstName) {
+                      if (firstName == null || firstName.isEmpty) {
+                        return 'First name is required';
+                      } else if (firstName.length < 2) {
+                        return 'First name must be at least 2 characters';
+                      }
+                      return null;
+                    },
+                    controller: _firstNameController,
+                    labelText: 'First Name',
+                    keyboardType: TextInputType.name,
+                    icon: Icons.person_outline_rounded,
+                    textInputAction: TextInputAction.next,
+                  ),
                 ),
-              ),
-              UIHelper.getHorizontalSpace(UIHelper.paddingSmall),
-              Expanded(
-                child: CustomTextField(
-                  labelText: 'Last Name',
-                  keyboardType: TextInputType.name,
-                  icon: Icons.person_outline_rounded,
-                  textInputAction: TextInputAction.next,
-                ),
-              ),
-            ],
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          CustomTextField(
-            labelText: 'Email Address',
-            keyboardType: TextInputType.emailAddress,
-            icon: Icons.email_outlined,
-            textInputAction: TextInputAction.next,
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          CustomTextField(
-            labelText: 'Phone Number',
-            keyboardType: TextInputType.phone,
-            icon: Icons.call_outlined,
-            textInputAction: TextInputAction.next,
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          CustomTextField(
-            labelText: 'Password',
-            obscureText: true,
-            icon: Icons.lock_outline,
-            textInputAction: TextInputAction.next,
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          CustomTextField(
-            labelText: 'Confirm Password',
-            obscureText: true,
-            icon: Icons.lock_outline,
-            textInputAction: TextInputAction.done,
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingSmall),
+                UIHelper.getHorizontalSpace(UIHelper.paddingSmall),
+                Expanded(
+                  child: CustomTextField(
+                    validator: (lastName) {
+                      if (lastName == null || lastName.isEmpty) {
+                        return 'Last name is required';
+                      } else if (lastName.length < 2) {
+                        return 'Last name must be at least 2 characters';
+                      }
+                      return null;
+                    },
+                    controller: _lastNameController,
 
-          // Terms and Conditions
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Checkbox(
-                value: _acceptTerms,
-                onChanged: (value) {
-                  setState(() {
-                    _acceptTerms = value ?? false;
-                  });
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
+                    labelText: 'Last Name',
+                    keyboardType: TextInputType.name,
+                    icon: Icons.person_outline_rounded,
+                    textInputAction: TextInputAction.next,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: RichText(
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
+              ],
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+            CustomTextField(
+              validator: (email) {
+                if (email == null || email.isEmpty) {
+                  return 'Email address is required';
+                } else if (!RegExp(
+                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                ).hasMatch(email)) {
+                  return 'Invalid email address';
+                }
+                return null;
+              },
+              controller: _emailController,
+              labelText: 'Email Address',
+              keyboardType: TextInputType.emailAddress,
+              icon: Icons.email_outlined,
+              textInputAction: TextInputAction.next,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+            CustomTextField(
+              validator: (phone) {
+                if (phone == null || phone.isEmpty) {
+                  return 'Phone number is required';
+                } else if (!RegExp(r'^\+?[0-9]{10,15}$').hasMatch(phone)) {
+                  return 'Invalid phone number';
+                }
+                return null;
+              },
+              controller: _phoneController,
+              labelText: 'Phone Number',
+              keyboardType: TextInputType.phone,
+              icon: Icons.call_outlined,
+              textInputAction: TextInputAction.next,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+            CustomTextField(
+              validator: (password) {
+                if (password == null || password.isEmpty) {
+                  return 'Password is required';
+                } else if (password.length < 8) {
+                  return 'Password must be at least 8 characters';
+                } else if (!RegExp(
+                  r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]',
+                ).hasMatch(password)) {
+                  return 'Password must contain uppercase, lowercase, number and special character';
+                }
+                return null;
+              },
+              controller: _passwordController,
+              labelText: 'Password',
+              obscureText: true,
+              icon: Icons.lock_outline,
+              textInputAction: TextInputAction.next,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+            CustomTextField(
+              validator: (confirmPassword) {
+                if (confirmPassword == null || confirmPassword.isEmpty) {
+                  return 'Please confirm your password';
+                } else if (confirmPassword != _passwordController.text) {
+                  return 'Passwords do not match';
+                }
+                return null;
+              },
+              controller: _confirmPasswordController,
+              labelText: 'Confirm Password',
+              obscureText: true,
+              icon: Icons.lock_outline,
+              textInputAction: TextInputAction.done,
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingSmall),
+
+            // Terms and Conditions
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Checkbox(
+                  value: _acceptTerms,
+                  onChanged: (value) {
+                    setState(() {
+                      _acceptTerms = value ?? false;
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: RichText(
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        children: [
+                          const TextSpan(text: 'I agree to the '),
+                          TextSpan(
+                            text: 'Terms of Service',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.labelSmall?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                              decorationColor:
+                                  Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                          const TextSpan(text: ' and '),
+                          TextSpan(
+                            text: 'Privacy Policy',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.labelSmall?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.w700,
+                              decoration: TextDecoration.underline,
+                              decorationColor:
+                                  Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                        ],
                       ),
-                      children: [
-                        const TextSpan(text: 'I agree to the '),
-                        TextSpan(
-                          text: 'Terms of Service',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.labelSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                            decorationColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                        const TextSpan(text: ' and '),
-                        TextSpan(
-                          text: 'Privacy Policy',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.labelSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.underline,
-                            decorationColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          UIHelper.getVerticalSpace(UIHelper.paddingMedium),
-          CustomButton(
-            text: 'Create Account',
-            onPressed:
-                _acceptTerms
-                    ? () {
-                      Navigator.pushReplacementNamed(context, '/bottom_nav');
-                    }
-                    : null,
-            isEnabled: _acceptTerms,
-          ),
-        ],
+              ],
+            ),
+            UIHelper.getVerticalSpace(UIHelper.paddingMedium),
+
+            CustomButton(
+              text: 'Create Account',
+              onPressed:
+                  _acceptTerms
+                      ? () {
+                        if (_formKey.currentState!.validate()) {
+                          context.read<SignUpBloc>().add(
+                            SignUpSubmittedEvent(
+                              firstName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              email: _emailController.text,
+                              phone: _phoneController.text,
+                              password: _passwordController.text,
+                              confirmPassword: _confirmPasswordController.text,
+                              acceptTerms: _acceptTerms,
+                            ),
+                          );
+                        }
+                      }
+                      : null,
+              isEnabled: _acceptTerms,
+            ),
+          ],
+        ),
       ),
     );
   }

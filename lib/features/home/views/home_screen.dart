@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_shakti/core/constants/app_icons.dart';
 import 'package:project_shakti/core/constants/app_strings.dart';
-import 'package:project_shakti/core/routes/routes.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
 import 'package:project_shakti/core/utils/ui_helper.dart';
 

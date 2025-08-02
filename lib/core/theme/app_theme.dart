@@ -30,12 +30,6 @@ class AppTheme {
         fontSize: 24,
         color: AppColors.fontLight,
       ),
-      headlineMedium: TextStyle(
-        fontFamily: 'Poppins',
-        fontWeight: FontWeight.w600,
-        fontSize: 18,
-        color: AppColors.fontLight, 
-      ),
       headlineSmall: TextStyle(
         fontFamily: 'Poppins',
         fontWeight: FontWeight.w500,
