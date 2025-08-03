@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'on_tap_screen/ambulance_screen.dart';
-import 'on_tap_screen/family_contact.dart';
-import 'on_tap_screen/police_screen.dart';
-import 'on_tap_screen/women_helpline.dart';
+import 'package:project_shakti/features/safe_call/widgets/widgets.dart';
 
 class SafeCall extends StatefulWidget {
   const SafeCall({super.key});
@@ -89,19 +86,7 @@ class _SafeCallState extends State<SafeCall> {
   }) {
     return GestureDetector(
       onTap: () {
-        if (label == 'Police') {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const PoliceScreen()));
-        } else if (label == 'Ambulance') {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const AmbulanceScreen()));
-        } else if (label == 'Women Helpline') {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const WomenHelplineScreen()));
-        } else if (label == 'Family Contact') {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const FamilyContactScreen()));
-        }
+        showCallConfirmationDialog(context, label);
       },
       child: Container(
         decoration: BoxDecoration(

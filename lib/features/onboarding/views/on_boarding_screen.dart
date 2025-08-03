@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:project_shakti/core/routes/routes.dart';
 import 'package:project_shakti/core/utils/sharedpref_helper.dart';
 import 'package:project_shakti/features/onboarding/widgets/emergency_alert_page.dart';
@@ -86,7 +87,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             await _prefsHelper.setOnboarded(
                               true,
                             ); // ← this line
-                            Navigator.pushReplacementNamed(context, '/login');
+                            context.push('/login');
                           } else {
                             _controller.nextPage(
                               duration: Duration(milliseconds: 300),

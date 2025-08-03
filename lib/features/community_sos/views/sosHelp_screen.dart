@@ -1,8 +1,9 @@
-// ignore_for_file: file_names, use_key_in_widget_constructors
-
 import 'package:flutter/material.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
+
 class SoshelpScreen extends StatefulWidget {
+  const SoshelpScreen({super.key});
+
   @override
   _SoshelpScreenState createState() => _SoshelpScreenState();
 }

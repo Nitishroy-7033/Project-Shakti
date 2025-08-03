@@ -141,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: CircleAvatar(
                   radius: 50,
                   backgroundImage: NetworkImage(
-                    'https://media.licdn.com/dms/image/v2/D5603AQGcK_XVMtcqpw/profile-displayphoto-crop_800_800/B56Ze6FETPGQAM-/0/1751173581372?e=1756944000&v=beta&t=GW5gpAtpmggF2WtKFpo8T8ZC74HIpi3Sz1DGrduSYRU',
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQH27gW63-UiRIoWc47Syd9CleQ5dNtO1kLLA&s',
                   ),
                   backgroundColor: Colors.transparent,
                 ),

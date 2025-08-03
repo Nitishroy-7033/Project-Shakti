@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:project_shakti/core/constants/app_icons.dart';
 import 'package:project_shakti/core/constants/app_strings.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
@@ -80,7 +81,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            context.push('/notification');
+          },
           icon: Icon(
             AppIcons.notification,
             color: Theme.of(context).colorScheme.primary,
@@ -89,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         UIHelper.getHorizontalSpace(UIHelper.paddingMedium),
         InkWell(
           onTap: () {
-            Navigator.pushNamed(context, '/profile');
+            context.push('/profile');
           },
           borderRadius: BorderRadius.circular(20),
           child: SizedBox(
@@ -97,10 +100,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             height: 36,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                "https://imgv3.fotor.com/images/slider-image/A-clear-close-up-photo-of-a-woman.jpg",
-                fit: BoxFit.cover,
-              ),
+              child: Icon(Icons.person),
             ),
           ),
         ),

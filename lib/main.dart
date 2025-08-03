@@ -27,14 +27,13 @@ class MyApp extends StatelessWidget {
           create: (_) => LoginBloc(loginrepository: LoginRepository()),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'Shakti',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.light,
-        initialRoute: AppRoutes.splash,
-        routes: AppRoutes.getRoutes(),
+        routerConfig: appRouter,
         builder: (context, child) {
           updateStatusBar(context);
           return child!;

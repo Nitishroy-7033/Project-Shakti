@@ -1,9 +1,9 @@
-// ignore_for_file: file_names, use_key_in_widget_constructors, deprecated_member_use
-
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
 
 class SosHelpAcceptScreen extends StatelessWidget {
+  const SosHelpAcceptScreen({super.key});
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -141,7 +141,9 @@ class SosHelpAcceptScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    context.push('/sosHelp');
+                  },
                   child: Text(
                     'I am safe',
                     style: TextStyle(

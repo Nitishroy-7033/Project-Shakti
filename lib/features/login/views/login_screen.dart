@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:project_shakti/core/constants/app_icons.dart';
 import 'package:project_shakti/core/constants/app_strings.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
@@ -124,10 +125,7 @@ class _LoginScreenState extends State<LoginScreen>
                             _prefsHelper.saveToken(state.token ?? '');
 
                             print('Token saved: ${state.token}');
-                            Navigator.pushReplacementNamed(
-                              context,
-                              '/bottom_nav',
-                            );
+                            context.push('/bottom_nav');
                             UIHelper.showSnackBar(
                               context,
                               state.message,
@@ -462,7 +460,7 @@ class _LoginScreenState extends State<LoginScreen>
           ),
           TextButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/signup');
+              context.push('/signup');
             },
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 8),

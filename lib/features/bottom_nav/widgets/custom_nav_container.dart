@@ -31,14 +31,18 @@ class CustomNavContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CustomNavButton(icon: AppIcons.home, label: "Home", index: 0),
-          CustomNavButton(icon: AppIcons.group, label: "Friends", index: 1),
+          CustomNavButton(icon: AppIcons.bolt, label: "Start Trip", index: 1),
           CustomNavButton(icon: AppIcons.emergency, label: "SOS", index: 2),
           CustomNavButton(
             icon: AppIcons.phoneTalk,
-            label: "Fake Call",
+            label: "Emergency",
             index: 3,
           ),
-          CustomNavButton(icon: AppIcons.schedule, label: "Trip", index: 4),
+          CustomNavButton(
+            icon: AppIcons.schedule,
+            label: "Trip History",
+            index: 4,
+          ),
         ],
       ),
     );

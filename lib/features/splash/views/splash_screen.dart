@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:project_shakti/core/constants/app_icons.dart';
 import 'package:project_shakti/core/constants/app_strings.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
@@ -88,19 +89,17 @@ class _SplashScreenState extends State<SplashScreen>
     // Start animations
     _startAnimations();
 
-   
-
     Future.delayed(const Duration(seconds: 4), () async {
       bool isOnboarded = await _prefsHelper.isOnboarded();
       String? token = await _prefsHelper.getToken();
 
       print('isOnboarded: $isOnboarded, token: $token');
       if (!isOnboarded) {
-        Navigator.pushReplacementNamed(context, '/onBoarding');
+        context.go('/onBoarding');
       } else if (token == null || token.isEmpty) {
-        Navigator.pushReplacementNamed(context, '/login');
+        context.go('/login');
       } else {
-        Navigator.pushReplacementNamed(context, '/bottom_nav');
+        context.go('/bottom_nav');
       }
     });
   }
