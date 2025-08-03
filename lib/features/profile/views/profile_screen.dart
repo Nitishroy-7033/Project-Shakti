@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
 import 'package:project_shakti/core/theme/app_text_styles.dart';
 import 'package:project_shakti/core/utils/ui_helper.dart';
@@ -95,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   _buildAppSettings(brightness),
 
                   // Support & Info
-                  _buildSupportSection(brightness),
+                  //_buildSupportSection(brightness),
 
                   // Sign Out Button
                   _buildSignOutSection(brightness),
@@ -191,7 +192,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               ),
               IconButton(
                 onPressed: () {
-                  // Handle name edit
+                  context.push('/editProfile'); // Handle name edit
                 },
                 icon: Icon(
                   Icons.edit_outlined,
@@ -203,13 +204,12 @@ class _ProfileScreenState extends State<ProfileScreen>
           ),
 
           // Email
-          Text(
-            ' shakti@gmail.com ',
-            style: AppTextStyles.body(brightness).copyWith(
-              color: AppTextStyles.body(brightness).color?.withOpacity(0.7),
-            ),
-          ),
-
+          // Text(
+          //   ' shakti@gmail.com ',
+          //   style: AppTextStyles.body(brightness).copyWith(
+          //     color: AppTextStyles.body(brightness).color?.withOpacity(0.7),
+          //   ),
+          // ),
           UIHelper.getVerticalSpace(UIHelper.paddingSmall),
 
           // Status Badge
@@ -317,21 +317,25 @@ class _ProfileScreenState extends State<ProfileScreen>
         'title': 'Personal Information',
         'subtitle': 'Update your details',
         'icon': Icons.person_outline,
+        'route': '/editProfile',
       },
       {
         'title': 'Emergency Contacts',
         'subtitle': 'Manage trusted contacts',
         'icon': Icons.contacts_outlined,
+        'route': '/editProfile',
       },
       {
         'title': 'Privacy Settings',
         'subtitle': 'Control your data',
         'icon': Icons.privacy_tip_outlined,
+        'route': '/editProfile',
       },
       {
         'title': 'Security',
         'subtitle': 'Password & authentication',
         'icon': Icons.security_outlined,
+        'route': '/editProfile',
       },
     ];
 
@@ -364,6 +368,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                       option,
                       brightness,
                       isLast: index == accountOptions.length - 1,
+                      onTap: () {
+                        context.push(option['route']); // GoRouter navigation
+                      },
                     );
                   }).toList(),
             ),
@@ -492,6 +499,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                       option,
                       brightness,
                       isLast: index == supportOptions.length - 1,
+                      onTap: () {
+                        context.push(option['route']);
+                      },
                     );
                   }).toList(),
             ),
@@ -509,11 +519,6 @@ class _ProfileScreenState extends State<ProfileScreen>
         onPressed: () {
           _showSignOutDialog(brightness);
         },
-
-        // style: ElevatedButton.styleFrom(
-        //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        //   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 100),
-        // ),
       ),
     );
   }
@@ -522,6 +527,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     Map<String, dynamic> option,
     Brightness brightness, {
     bool isLast = false,
+    required VoidCallback onTap,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -542,13 +548,13 @@ class _ProfileScreenState extends State<ProfileScreen>
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            // color: AppColor.accentBlue(brightness).withOpacity(0.1),
+            // Optional: Add a background color or gradient here
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
             option['icon'],
-            // color: AppColor.accentBlue(brightness),
             size: 20,
+            // Optional: color: AppColor.accentBlue(brightness),
           ),
         ),
         title: Text(
@@ -568,9 +574,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           size: 16,
           color: AppTextStyles.body(brightness).color?.withOpacity(0.5),
         ),
-        onTap: () {
-          // Handle navigation
-        },
+        onTap: onTap,
       ),
     );
   }

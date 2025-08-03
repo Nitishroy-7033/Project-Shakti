@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
 import 'package:project_shakti/core/theme/app_text_styles.dart';
 import 'package:project_shakti/features/change_password/views/change_password_screen.dart';
@@ -306,12 +307,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     // Change Password Field
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ChangePasswordScreen(),
-                          ),
-                        );
+                        context.push('/changePassword');
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(

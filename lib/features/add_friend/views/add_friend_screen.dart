@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:project_shakti/core/constants/app_icons.dart';
 import 'package:project_shakti/core/utils/ui_helper.dart';
@@ -161,12 +162,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
             SizedBox(height: 30),
             CustomButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const FriendListPage(),
-                  ),
-                );
+                context.push('/friendList');
               },
               text: "Add Friend",
             ),

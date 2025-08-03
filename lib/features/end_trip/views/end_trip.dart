@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:project_shakti/core/theme/app_colors.dart';
@@ -213,6 +214,7 @@ class _EndTripScreenState extends State<EndTripScreen> {
                     ),
                     onPressed: () {
                       print("Rating: $_rating");
+                      context.push('/bottom_nav');
                     },
                     icon: const Icon(Icons.check),
                     label: const Text('Done'),
@@ -221,7 +223,9 @@ class _EndTripScreenState extends State<EndTripScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push('/startTrip');
+                    },
                     icon: const Icon(Icons.directions_walk),
                     label: const Text('New Trip'),
                     style: OutlinedButton.styleFrom(

@@ -114,11 +114,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'icon': AppIcons.schedule,
         'title': 'Schedule\nTrip',
         'color': Colors.blue,
+        'route': '/trip-scheduler',
       },
       {
         'icon': AppIcons.checkCircle,
         'title': 'Check-In',
         'color': Colors.orange,
+        'route': '/check-in',
       },
       {
         'icon': AppIcons.emergency,
@@ -126,13 +128,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'color': Colors.red,
         'isSOS': true,
       },
-      {'icon': AppIcons.group, 'title': 'Community', 'color': Colors.pink},
+      {
+        'icon': AppIcons.group,
+        'title': 'Community',
+        'color': Colors.pink,
+        'route': '/sosHelp',
+      },
       {
         'icon': AppIcons.contactPhone,
         'title': 'Emergency\nContacts',
         'color': Colors.redAccent,
+        'route': '/friendList',
       },
-      {'icon': AppIcons.phoneTalk, 'title': 'Fake\nCall', 'color': Colors.teal},
+      {
+        'icon': AppIcons.phoneTalk,
+        'title': 'Fake\nCall',
+        'color': Colors.teal,
+        'route': '/fakeCall',
+      },
     ];
 
     return Column(
@@ -165,8 +178,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               onTap: () {
                 if (isSOS) {
                   _showSOSDialog();
-                } else {}
+                } else {
+                  final route = action['route'] as String?;
+                  if (route != null) {
+                    context.push(route); // Requires GoRouter to be setup
+                  }
+                }
               },
+
               child: AnimatedBuilder(
                 animation: _pulseController,
                 builder: (context, child) {

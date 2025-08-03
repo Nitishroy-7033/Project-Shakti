@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_shakti/core/theme/app_text_styles.dart';
@@ -22,7 +23,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
   late GoogleMapController _mapController;
 
   final TextEditingController _pickupController = TextEditingController();
-final TextEditingController _dropController = TextEditingController();
+  final TextEditingController _dropController = TextEditingController();
 
   LatLng? _sourceLatLng;
   LatLng? _destinationLatLng;
@@ -40,7 +41,7 @@ final TextEditingController _dropController = TextEditingController();
   void dispose() {
     _tripTimer?.cancel();
     _pickupController.dispose();
-   _dropController.dispose();
+    _dropController.dispose();
     super.dispose();
   }
 
@@ -60,59 +61,62 @@ final TextEditingController _dropController = TextEditingController();
     return null;
   }
 
- Future<void> _getRoute() async {
-  if (_sourceLatLng == null || _destinationLatLng == null) return;
+  Future<void> _getRoute() async {
+    if (_sourceLatLng == null || _destinationLatLng == null) return;
 
-  final url = Uri.parse('https://routes.googleapis.com/directions/v2:computeRoutes');
+    final url = Uri.parse(
+      'https://routes.googleapis.com/directions/v2:computeRoutes',
+    );
 
-  final headers = {
-    'Content-Type': 'application/json',
-    'X-Goog-Api-Key': _apiKey,
-    'X-Goog-FieldMask': 'routes.polyline.encodedPolyline',
-  };
+    final headers = {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': _apiKey,
+      'X-Goog-FieldMask': 'routes.polyline.encodedPolyline',
+    };
 
-  final body = jsonEncode({
-    "origin": {
-      "location": {
-        "latLng": {
-          "latitude": _sourceLatLng!.latitude,
-          "longitude": _sourceLatLng!.longitude
+    final body = jsonEncode({
+      "origin": {
+        "location": {
+          "latLng": {
+            "latitude": _sourceLatLng!.latitude,
+            "longitude": _sourceLatLng!.longitude,
+          },
+        },
+      },
+      "destination": {
+        "location": {
+          "latLng": {
+            "latitude": _destinationLatLng!.latitude,
+            "longitude": _destinationLatLng!.longitude,
+          },
+        },
+      },
+      "travelMode":
+          _selectedMode
+              .toUpperCase(), // must be one of: DRIVE, BICYCLE, WALK, TRANSIT
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        final routes = jsonResponse['routes'];
+        if (routes != null && routes.isNotEmpty) {
+          final encodedPolyline = routes[0]['polyline']['encodedPolyline'];
+          _polylinePoints = _decodePolyline(encodedPolyline);
+          _currentProgressIndex = 0;
+          setState(() {});
+        } else {
+          _showErrorSnackBar("No routes found.");
         }
-      }
-    },
-    "destination": {
-      "location": {
-        "latLng": {
-          "latitude": _destinationLatLng!.latitude,
-          "longitude": _destinationLatLng!.longitude
-        }
-      }
-    },
-    "travelMode": _selectedMode.toUpperCase(), // must be one of: DRIVE, BICYCLE, WALK, TRANSIT
-  });
-
-  try {
-    final response = await http.post(url, headers: headers, body: body);
-
-    if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
-      final routes = jsonResponse['routes'];
-      if (routes != null && routes.isNotEmpty) {
-        final encodedPolyline = routes[0]['polyline']['encodedPolyline'];
-        _polylinePoints = _decodePolyline(encodedPolyline);
-        _currentProgressIndex = 0;
-        setState(() {});
       } else {
-        _showErrorSnackBar("No routes found.");
+        _showErrorSnackBar("Route API failed: ${response.body}");
       }
-    } else {
-      _showErrorSnackBar("Route API failed: ${response.body}");
+    } catch (e) {
+      _showErrorSnackBar("Failed to get route: $e");
     }
-  } catch (e) {
-    _showErrorSnackBar("Failed to get route: $e");
   }
-}
-
 
   List<LatLng> _decodePolyline(String encoded) {
     List<LatLng> points = [];
@@ -175,9 +179,7 @@ final TextEditingController _dropController = TextEditingController();
 
     try {
       final source = await _getCoordinates(_pickupController.text.trim());
-      final destination = await _getCoordinates(
-        _dropController.text.trim(),
-      );
+      final destination = await _getCoordinates(_dropController.text.trim());
 
       if (source == null || destination == null) {
         _showErrorSnackBar("Invalid source or destination location");
@@ -279,7 +281,16 @@ final TextEditingController _dropController = TextEditingController();
         children: [
           _buildTripForm(),
           _buildMapContainer(),
-          _buildActionButtons(),
+          SizedBox(height: 10),
+          CustomButton(
+            text: "Start Trip",
+            isLoading: false,
+            isEnabled: true,
+            onPressed: () {
+              context.push('/liveTrip');
+            },
+          ),
+          //_buildActionButtons(),
           const SizedBox(height: 16),
         ],
       ),
@@ -305,8 +316,8 @@ final TextEditingController _dropController = TextEditingController();
                 children: [
                   // Current Location Row
                   Row(
-          children: [
-             Container(
+                    children: [
+                      Container(
                         width: 10,
                         height: 10,
                         decoration: const BoxDecoration(
@@ -314,9 +325,9 @@ final TextEditingController _dropController = TextEditingController();
                           shape: BoxShape.circle,
                         ),
                       ),
-           
-            const SizedBox(width: 16),
-            Expanded(
+
+                      const SizedBox(width: 16),
+                      Expanded(
                         child: TextField(
                           controller: _pickupController,
                           style: const TextStyle(
@@ -334,9 +345,9 @@ final TextEditingController _dropController = TextEditingController();
                           ),
                         ),
                       ),
-            const SizedBox(width: 16),
-          ],
-        ),
+                      const SizedBox(width: 16),
+                    ],
+                  ),
 
                   const Divider(
                     color: Color(0xFFE0E0E0),
@@ -556,7 +567,18 @@ final TextEditingController _dropController = TextEditingController();
                     : "Start Trip",
             isLoading: _isLoading,
             isEnabled: !_isLoading,
-            onPressed: _isTripActive ? _stopTrip : _startTrip,
+            onPressed: () async {
+              if (_isTripActive) {
+                _stopTrip();
+              } else {
+                await _startTrip();
+
+                if (mounted && _polylinePoints.isNotEmpty) {
+                  // Navigate to LiveTripScreen
+                  context.push('liveTrip');
+                }
+              }
+            },
             backgroundColor:
                 _isTripActive ? AppColors.fontDark : AppColors.successColor,
           ),
